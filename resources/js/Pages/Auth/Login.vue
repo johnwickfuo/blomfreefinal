@@ -6,6 +6,9 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
+import { ref } from 'vue';
+
+const showPassword = ref(false);
 
 defineProps<{
     canResetPassword?: boolean;
@@ -35,6 +38,8 @@ const submit = () => {
             {{ status }}
         </div>
 
+        <h1 class="mb-2 text-3xl font-bold">Welcome back</h1>
+        <p class="mb-7 text-sm text-gray-600">Sign in to your BLOMFREE account.</p>
         <form @submit.prevent="submit">
             <div>
                 <InputLabel for="email" value="Email" />
@@ -57,13 +62,14 @@ const submit = () => {
 
                 <TextInput
                     id="password"
-                    type="password"
+                    :type="showPassword ? 'text' : 'password'"
                     class="mt-1 block w-full"
                     v-model="form.password"
                     required
                     autocomplete="current-password"
                 />
 
+                <button type="button" class="mt-2 text-sm font-medium text-[#F58220] hover:underline" :aria-label="showPassword ? 'Hide password' : 'Show password'" @click="showPassword = !showPassword">{{ showPassword ? 'Hide password' : 'Show password' }}</button>
                 <InputError class="mt-2" :message="form.errors.password" />
             </div>
 
@@ -76,7 +82,7 @@ const submit = () => {
                 </label>
             </div>
 
-            <div class="mt-4 flex items-center justify-end">
+            <div class="mt-6 flex flex-wrap items-center justify-between gap-4">
                 <Link
                     v-if="canResetPassword"
                     :href="route('password.request')"
@@ -86,13 +92,14 @@ const submit = () => {
                 </Link>
 
                 <PrimaryButton
-                    class="ms-4"
+                    class="min-h-11 bg-[#F58220] hover:bg-[#FF6B00]"
                     :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing"
                 >
-                    Log in
+                    {{ form.processing ? 'Signing in…' : 'Sign in' }}
                 </PrimaryButton>
             </div>
         </form>
+        <p class="mt-7 text-center text-sm text-gray-600">New to BLOMFREE? <Link :href="route('register')" class="font-semibold text-[#F58220] hover:underline">Create an account</Link></p>
     </GuestLayout>
 </template>
