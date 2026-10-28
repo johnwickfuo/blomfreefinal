@@ -30,6 +30,8 @@ const submit = () => {
 <template>
     <GuestLayout>
         <Head title="Reset Password" />
+        <h1 class="mb-2 text-3xl font-bold">Choose a new password</h1>
+        <p class="mb-6 text-sm text-gray-600">Set a strong password to protect your account.</p>
 
         <form @submit.prevent="submit">
             <div>
@@ -84,7 +86,7 @@ const submit = () => {
                 />
             </div>
 
-            <div class="mt-4 flex items-center justify-end">
+            <div class="mt-6 flex items-center justify-end">
                 <PrimaryButton
                     :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing"

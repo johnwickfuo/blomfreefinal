@@ -22,8 +22,10 @@ const submit = () => {
 <template>
     <GuestLayout>
         <Head title="Forgot Password" />
+        <h1 class="mb-2 text-3xl font-bold">Reset your password</h1>
+        <p class="mb-6 text-sm text-gray-600">Enter your email and we will send you a secure reset link.</p>
 
-        <div class="mb-4 text-sm text-gray-600">
+        <div class="sr-only">
             Forgot your password? No problem. Just let us know your email
             address and we will email you a password reset link that will allow
             you to choose a new one.
@@ -53,7 +55,7 @@ const submit = () => {
                 <InputError class="mt-2" :message="form.errors.email" />
             </div>
 
-            <div class="mt-4 flex items-center justify-end">
+            <div class="mt-6 flex items-center justify-end">
                 <PrimaryButton
                     :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing"
