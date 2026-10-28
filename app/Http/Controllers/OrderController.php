@@ -9,8 +9,10 @@ use Inertia\Response;
 
 class OrderController extends Controller
 {
-    public function show(Order $order): Response
+    public function show(Request $request, Order $order): Response
     {
+        abort_unless($request->hasValidSignature() || $request->session()->get('order_access.'.$order->reference), 403);
+
         $order->load('items');
 
         return Inertia::render('Orders/Show', [

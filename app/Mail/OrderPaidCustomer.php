@@ -18,7 +18,7 @@ class OrderPaidCustomer extends Mailable implements ShouldQueue
 
     public function __construct(public Order $order)
     {
-        $this->statusUrl = route('orders.show', ['order' => $order->reference]);
+        $this->statusUrl = \Illuminate\Support\Facades\URL::temporarySignedRoute('orders.show', now()->addDays(30), ['order' => $order->reference]);
     }
 
     public function envelope(): Envelope

@@ -18,7 +18,7 @@ class InspectionConfirmedCustomer extends Mailable implements ShouldQueue
 
     public function __construct(public Inspection $inspection)
     {
-        $this->statusUrl = route('inspections.show', ['inspection' => $inspection->reference]);
+        $this->statusUrl = \Illuminate\Support\Facades\URL::temporarySignedRoute('inspections.show', now()->addDays(30), ['inspection' => $inspection->reference]);
     }
 
     public function envelope(): Envelope

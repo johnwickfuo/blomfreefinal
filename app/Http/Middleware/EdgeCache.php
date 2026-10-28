@@ -24,18 +24,9 @@ class EdgeCache
             return $response;
         }
 
-        $user = $request->user();
-        if ($user && ($user->is_admin ?? false)) {
-            $response->headers->set('Cache-Control', 'private, no-store');
-
-            return $response;
-        }
-
-        $seconds = max(0, $minutes) * 60;
-        $response->headers->set(
-            'Cache-Control',
-            "public, max-age={$seconds}, s-maxage={$seconds}",
-        );
+        // Inertia shares cart, flash and authentication state even on catalogue pages.
+        // Shared HTML caching is unsafe for both guests and signed-in customers.
+        $response->headers->set('Cache-Control', 'private, no-store');
 
         return $response;
     }

@@ -11,6 +11,7 @@ use App\Models\Land;
 use App\Models\Setting;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -72,11 +73,13 @@ class InspectionController extends Controller
         Mail::to($adminEmail)->send(new InspectionRequestedAdmin($inspection));
         Mail::to($inspection->customer_email)->send(new InspectionConfirmedCustomer($inspection));
 
-        return redirect()->route('inspections.show', $inspection);
+        return redirect(\Illuminate\Support\Facades\URL::temporarySignedRoute('inspections.show', now()->addDays(30), ['inspection' => $inspection->reference]));
     }
 
-    public function show(Inspection $inspection): Response
+    public function show(Request $request, Inspection $inspection): Response
     {
+        abort_unless($request->hasValidSignature() || $request->session()->get('inspection_access.'.$inspection->reference), 403);
+
         $inspection->load('inspectable.media');
 
         $inspectable = $inspection->inspectable;

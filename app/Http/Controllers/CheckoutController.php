@@ -112,6 +112,6 @@ class CheckoutController extends Controller
 
         $this->orders->markPaid($order, $result->transactionId);
 
-        return redirect()->route('orders.show', ['order' => $order->reference]);
+        return redirect(\Illuminate\Support\Facades\URL::temporarySignedRoute('orders.show', now()->addDays(30), ['order' => $order->reference]));
     }
 }
