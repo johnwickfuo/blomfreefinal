@@ -32,8 +32,14 @@ type FeaturedData = Record<TabKey, FeaturedItem[]>;
 const props = withDefaults(
     defineProps<{
         featured?: FeaturedData;
+        articles?: { id: number; title: string; excerpt: string; category: string; image: string | null; href: string }[];
+        testimonials?: { id: number; name: string; quote: string; division: string | null; image: string | null }[];
+        banners?: { id: number; eyebrow: string | null; headline: string; description: string | null; image: string | null; button_label: string | null; button_url: string | null }[];
     }>(),
     {
+        articles: () => [],
+        testimonials: () => [],
+        banners: () => [],
         featured: () => ({
             lands: [],
             animals: [],
@@ -349,6 +355,23 @@ const ceoImage = computed<string>(() => {
         <Section>
             <h2 class="text-3xl font-extrabold">How BLOMFREE works</h2>
             <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4"><div v-for="(step, i) in [{title:'Explore',text:'Browse real products, animals and land.'},{title:'Choose',text:'Review images, prices and available options.'},{title:'Connect or purchase',text:'Order eligible items online or request an inspection.'},{title:'Track',text:'Follow orders or applications through your account.'}]" :key="step.title" class="rounded-2xl border border-brand-dark/10 p-6"><span class="text-sm font-bold text-brand-orange">0{{ i + 1 }}</span><h3 class="mt-3 text-lg font-bold">{{ step.title }}</h3><p class="mt-2 text-sm text-brand-dark/65">{{ step.text }}</p></div></div>
+        </Section>
+
+        <Section v-if="banners.length">
+            <div class="grid gap-5 lg:grid-cols-2">
+                <article v-for="banner in banners" :key="banner.id" class="overflow-hidden rounded-3xl bg-brand-dark text-white">
+                    <img v-if="banner.image" :src="banner.image" :alt="banner.headline" loading="lazy" class="aspect-[16/7] w-full object-cover" />
+                    <div class="p-7 sm:p-10"><p v-if="banner.eyebrow" class="text-sm font-bold uppercase tracking-wider text-brand-orange">{{ banner.eyebrow }}</p><h2 class="mt-2 text-2xl font-extrabold sm:text-3xl">{{ banner.headline }}</h2><p v-if="banner.description" class="mt-3 text-white/75">{{ banner.description }}</p><Link v-if="banner.button_label && banner.button_url" :href="banner.button_url" class="mt-5 inline-block rounded-full bg-brand-orange px-5 py-3 font-bold text-white">{{ banner.button_label }}</Link></div>
+                </article>
+            </div>
+        </Section>
+        <Section v-if="testimonials.length">
+            <Badge variant="info">Customer voices</Badge><h2 class="mt-3 text-3xl font-extrabold">What customers say</h2>
+            <div class="mt-8 grid gap-5 md:grid-cols-3"><blockquote v-for="item in testimonials" :key="item.id" class="rounded-2xl bg-white p-6 shadow-sm"><p class="leading-relaxed">“{{ item.quote }}”</p><footer class="mt-5 flex items-center gap-3"><img v-if="item.image" :src="item.image" :alt="item.name" loading="lazy" class="h-10 w-10 rounded-full object-cover" /><div><strong class="block text-sm">{{ item.name }}</strong><span v-if="item.division" class="text-xs text-brand-dark/60">{{ item.division }}</span></div></footer></blockquote></div>
+        </Section>
+        <Section v-if="articles.length">
+            <div class="flex flex-wrap items-end justify-between gap-4"><div><Badge variant="info">Insights</Badge><h2 class="mt-3 text-3xl font-extrabold">Ideas and guides</h2></div><Link href="/insights" class="font-semibold text-brand-orange hover:underline">All articles →</Link></div>
+            <div class="mt-8 grid gap-5 md:grid-cols-3"><article v-for="article in articles" :key="article.id" class="overflow-hidden rounded-2xl bg-white shadow-sm"><img v-if="article.image" :src="article.image" :alt="article.title" loading="lazy" class="aspect-[16/10] w-full object-cover" /><div class="p-6"><p class="text-xs font-bold uppercase text-brand-orange">{{ article.category }}</p><h3 class="mt-2 text-xl font-bold">{{ article.title }}</h3><p class="mt-3 line-clamp-3 text-sm text-brand-dark/70">{{ article.excerpt }}</p><Link :href="article.href" class="mt-5 inline-block font-semibold text-brand-orange">Read article →</Link></div></article></div>
         </Section>
 
         <!-- 7. Final CTA band -->

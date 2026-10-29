@@ -152,7 +152,7 @@ onBeforeUnmount(() => {
                 </Link>
 
                 <!-- Desktop nav -->
-                <nav class="hidden items-center gap-1 lg:flex">
+                <nav class="hidden items-center gap-1 xl:flex">
                     <Link
                         v-for="link in navLinks"
                         :key="link.href"
@@ -174,13 +174,13 @@ onBeforeUnmount(() => {
                     <template v-if="!authUser">
                         <Link
                             href="/login"
-                            class="hidden rounded-full px-3.5 py-2 text-sm font-semibold text-white/80 transition-colors hover:text-white lg:inline-flex"
+                            class="hidden rounded-full px-3.5 py-2 text-sm font-semibold text-white/80 transition-colors hover:text-white xl:inline-flex"
                         >
                             Log in
                         </Link>
                         <Link
                             href="/register"
-                            class="hidden rounded-full bg-brand-orange px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-orangeDark lg:inline-flex"
+                            class="hidden rounded-full bg-brand-orange px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-orangeDark xl:inline-flex"
                         >
                             Register
                         </Link>
@@ -189,7 +189,7 @@ onBeforeUnmount(() => {
                     <Link
                         v-else
                         :href="accountHref"
-                        class="hidden items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-semibold text-white/80 transition-colors hover:text-white lg:inline-flex"
+                        class="hidden items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-semibold text-white/80 transition-colors hover:text-white xl:inline-flex"
                     >
                         <UserCircle class="h-4 w-4" />
                         My account
@@ -212,7 +212,7 @@ onBeforeUnmount(() => {
 
                     <button
                         type="button"
-                        class="rounded-full p-2.5 text-white/90 transition-colors hover:bg-white/10 hover:text-white lg:hidden"
+                        class="rounded-full p-2.5 text-white/90 transition-colors hover:bg-white/10 hover:text-white xl:hidden"
                         aria-label="Open menu"
                         @click="mobileOpen = true"
                     >

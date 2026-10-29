@@ -36,7 +36,31 @@ Route::get('/', function () {
             'href' => route($division.'.show', $product),
         ])->values();
 
+    $articles = \App\Models\Article::query()->where('is_published', true)->whereNotNull('published_at')
+        ->where('published_at', '<=', now())->latest('published_at')->limit(3)->get();
+    $testimonials = \App\Models\Testimonial::query()->where('is_approved', true)
+        ->orderBy('display_order')->limit(3)->get();
+    $banners = \App\Models\HomepageBanner::query()->where('is_active', true)
+        ->where(fn ($query) => $query->whereNull('starts_at')->orWhere('starts_at', '<=', now()))
+        ->where(fn ($query) => $query->whereNull('ends_at')->orWhere('ends_at', '>=', now()))
+        ->orderBy('display_order')->limit(3)->get();
+
     return Inertia::render('Home', [
+        'articles' => $articles->map(fn ($article) => [
+            'id' => $article->id, 'title' => $article->title, 'excerpt' => $article->excerpt,
+            'category' => $article->category, 'image' => $article->image_path ? \Illuminate\Support\Facades\Storage::disk('public')->url($article->image_path) : null,
+            'href' => route('articles.show', $article->slug),
+        ]),
+        'testimonials' => $testimonials->map(fn ($item) => [
+            'id' => $item->id, 'name' => $item->customer_name, 'quote' => $item->quote,
+            'division' => $item->division, 'image' => $item->image_path ? \Illuminate\Support\Facades\Storage::disk('public')->url($item->image_path) : null,
+        ]),
+        'banners' => $banners->map(fn ($banner) => [
+            'id' => $banner->id, 'eyebrow' => $banner->eyebrow, 'headline' => $banner->headline,
+            'description' => $banner->description, 'image' => $banner->image_path ? \Illuminate\Support\Facades\Storage::disk('public')->url($banner->image_path) : null,
+            'button_label' => $banner->button_label,
+            'button_url' => preg_match('~^/(?!/)[a-zA-Z0-9/_?=&%-]*$~', $banner->button_url ?? '') ? $banner->button_url : null,
+        ]),
         'featured' => [
             'lands' => $lands->map(fn ($land) => [
                 'id' => $land->id, 'title' => $land->title, 'image' => $land->cover_url,
@@ -56,6 +80,28 @@ Route::get('/', function () {
         ],
     ]);
 })->name('home')->middleware('edge-cache');
+
+Route::get('/insights', function () {
+    return Inertia::render('Articles/Index', [
+        'articles' => \App\Models\Article::query()->where('is_published', true)
+            ->whereNotNull('published_at')->where('published_at', '<=', now())
+            ->latest('published_at')->paginate(12)->through(fn ($article) => [
+                'title' => $article->title, 'slug' => $article->slug, 'excerpt' => $article->excerpt,
+                'category' => $article->category, 'published_at' => $article->published_at->toDateString(),
+                'image' => $article->image_path ? \Illuminate\Support\Facades\Storage::disk('public')->url($article->image_path) : null,
+            ]),
+    ]);
+})->name('articles.index');
+Route::get('/insights/{slug}', function (string $slug) {
+    $article = \App\Models\Article::query()->where('slug', $slug)->where('is_published', true)
+        ->whereNotNull('published_at')->where('published_at', '<=', now())->firstOrFail();
+    return Inertia::render('Articles/Show', ['article' => [
+        'title' => $article->title, 'excerpt' => $article->excerpt, 'body' => $article->body,
+        'category' => $article->category, 'published_at' => $article->published_at->toDateString(),
+        'seo_title' => $article->seo_title, 'seo_description' => $article->seo_description,
+        'image' => $article->image_path ? \Illuminate\Support\Facades\Storage::disk('public')->url($article->image_path) : null,
+    ]]);
+})->name('articles.show');
 
 Route::get('/about', function () {
     return Inertia::render('About');
