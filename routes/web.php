@@ -19,13 +19,40 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    // Featured listings are populated as each subsidiary phase lands.
+    $lands = \App\Models\Land::query()->with('media')->where('status', 'available')
+        ->orderByDesc('is_featured')->orderBy('order')->limit(3)->get();
+    $animals = \App\Models\Animal::query()->with('media')
+        ->where(fn ($query) => $query->where(fn ($pool) => $pool->where('listing_type', 'pool')->where('stock', '>', 0))
+            ->orWhere(fn ($individual) => $individual->where('listing_type', 'individual')->where('availability', 'available')))
+        ->orderByDesc('is_featured')->orderBy('order')->limit(3)->get();
+    $products = \App\Models\Product::query()->with(['media', 'variants'])
+        ->where('is_published', true)->whereIn('subsidiary', ['collections', 'gadgets'])
+        ->orderByDesc('is_featured')->orderBy('order')->limit(24)->get();
+
+    $productCards = fn ($division) => $products->where('subsidiary', $division)
+        ->filter(fn ($product) => $product->is_in_stock)->take(3)->map(fn ($product) => [
+            'id' => $product->id, 'title' => $product->name, 'image' => $product->cover_url,
+            'meta' => $product->category, 'price' => (float) $product->display_price,
+            'href' => route($division.'.show', $product),
+        ])->values();
+
     return Inertia::render('Home', [
         'featured' => [
-            'lands' => [],
-            'animals' => [],
-            'collections' => [],
-            'gadgets' => [],
+            'lands' => $lands->map(fn ($land) => [
+                'id' => $land->id, 'title' => $land->title, 'image' => $land->cover_url,
+                'meta' => $land->city_or_lga.', '.$land->state,
+                'price' => (float) $land->price_per_plot,
+                'detail' => $land->plot_size_sqm ? $land->plot_size_sqm.' m² per plot' : null,
+                'installments' => $land->installmentAvailableForPurchase(),
+                'href' => route('lands.show', $land),
+            ]),
+            'animals' => $animals->map(fn ($animal) => [
+                'id' => $animal->id, 'title' => $animal->name, 'image' => $animal->cover_url,
+                'meta' => $animal->breed, 'price' => (float) $animal->price,
+                'href' => route('kennel-farm.show', $animal),
+            ]),
+            'collections' => $productCards('collections'),
+            'gadgets' => $productCards('gadgets'),
         ],
     ]);
 })->name('home')->middleware('edge-cache');

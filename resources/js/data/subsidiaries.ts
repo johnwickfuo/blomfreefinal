@@ -1,36 +1,39 @@
 import type { Component } from 'vue';
-import { MapPin, PawPrint, Shirt, Smartphone } from 'lucide-vue-next';
+import { MapPin, PawPrint, Shirt, Smartphone, CarFront } from 'lucide-vue-next';
 
 export interface Subsidiary {
     name: string;
     tagline: string;
     href: string;
     icon: Component;
+    image?: string;
+    comingSoon?: boolean;
 }
 
 export const subsidiaries: Subsidiary[] = [
     {
         name: 'BLOMFREE Real Estate',
-        tagline: 'Premium real estate at flood-free locations across Nigeria',
+        tagline: 'Discover quality land and property opportunities',
         href: '/lands',
         icon: MapPin,
     },
     {
         name: 'BLOMFREE Kennel & Farm',
-        tagline: 'Imported and locally bred quality animals',
+        tagline: 'Explore carefully raised and sourced animals',
         href: '/kennel-farm',
         icon: PawPrint,
     },
     {
         name: 'BLOMFREE Collections',
-        tagline: 'Unisex clothing and accessories',
+        tagline: 'Discover fashion and accessories for everyday confidence',
         href: '/collections',
         icon: Shirt,
     },
     {
         name: 'BLOMFREE Gadgets & Accessories',
-        tagline: 'Phones, consoles, audio, and smart devices',
+        tagline: 'Shop practical technology, electronics and devices',
         href: '/gadgets',
         icon: Smartphone,
     },
+    { name: 'BLOMWHEELS Automobile', tagline: 'Discover our upcoming automobile division', href: '/contact', icon: CarFront, comingSoon: true },
 ];

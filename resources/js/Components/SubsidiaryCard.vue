@@ -9,11 +9,13 @@ defineProps<{
     tagline: string;
     href: string;
     icon: Component;
+    image?: string;
+    comingSoon?: boolean;
 }>();
 </script>
 
 <template>
-    <Card class="group flex h-full flex-col gap-5 p-6 sm:p-7">
+    <Card class="group flex h-full flex-col gap-5 overflow-hidden p-6 transition-shadow hover:shadow-xl sm:p-7">
         <span
             class="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-brand-orange/10 text-brand-orange transition-colors duration-300 group-hover:bg-brand-orange group-hover:text-white"
         >
@@ -21,6 +23,7 @@ defineProps<{
         </span>
 
         <div>
+            <span v-if="comingSoon" class="mb-2 inline-block rounded-full bg-brand-orange/10 px-3 py-1 text-xs font-bold text-brand-orange">Coming soon</span>
             <h3 class="text-lg font-bold tracking-tight">{{ name }}</h3>
             <p class="mt-1.5 text-sm leading-relaxed text-brand-dark/65">
                 {{ tagline }}
@@ -31,7 +34,7 @@ defineProps<{
             :href="href"
             class="mt-auto inline-flex items-center gap-1.5 text-sm font-semibold text-brand-orange transition-colors hover:text-brand-orangeDark"
         >
-            Explore
+            {{ comingSoon ? 'Contact us' : 'Explore' }}
             <ArrowRight
                 class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
             />

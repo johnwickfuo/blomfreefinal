@@ -20,6 +20,9 @@ interface FeaturedItem {
     image: string | null;
     meta: string | null;
     href: string;
+    price?: number;
+    detail?: string | null;
+    installments?: boolean;
 }
 
 type TabKey = 'lands' | 'animals' | 'collections' | 'gadgets';
@@ -52,14 +55,6 @@ const activeItems = computed<FeaturedItem[]>(() => props.featured[activeTab.valu
 const activeTabLabel = computed(
     () => tabs.find((t) => t.key === activeTab.value)?.label ?? '',
 );
-
-// Placeholder figures — easy to edit once real numbers are available.
-const stats: { value: string; label: string }[] = [
-    { value: '40+', label: 'Properties Sold' },
-    { value: 'Premium', label: 'Breeds Imported' },
-    { value: '1000+', label: 'Customers' },
-    { value: '100%', label: 'Reliable' },
-];
 
 const scrollToSubsidiaries = (): void => {
     document
@@ -103,8 +98,9 @@ const ceoImage = computed<string>(() => {
                 >
                     <img
                         :src="ceoImage"
-                        alt="Saturday Emomotimi Charles, CEO of BLOMFREE & CO."
+                        alt="BLOMFREE company leadership"
                         class="h-full w-full object-cover object-top"
+                        fetchpriority="high"
                     />
                     <div
                         class="absolute inset-0 bg-gradient-to-r from-brand-dark via-brand-dark/60 to-transparent"
@@ -124,19 +120,18 @@ const ceoImage = computed<string>(() => {
                 <h1
                     class="text-4xl font-extrabold leading-[1.1] tracking-tight text-white sm:text-5xl lg:text-6xl"
                 >
-                    One Group. Four Industries.
+                    One Company.
                     <span class="text-brand-orange">
                         Endless Possibilities.
                     </span>
                 </h1>
             </template>
             <template #subtitle>
-                BLOMFREE &amp; CO. NIG. LTD is your trusted Nigerian partner for
-                land, premium livestock, fashion, and gadgets.
+                From real estate and automobiles to fashion, technology and livestock, BLOMFREE brings quality and opportunity together.
             </template>
             <template #actions>
                 <Button size="lg" @click="scrollToSubsidiaries">
-                    Explore Subsidiaries
+                    Explore Our Businesses
                 </Button>
                 <Button href="/contact" variant="outline" size="lg">
                     Contact Us
@@ -178,7 +173,8 @@ const ceoImage = computed<string>(() => {
                     />
                     <img
                         :src="ceoImage"
-                        alt="Saturday Emomotimi Charles, CEO"
+                        alt="BLOMFREE company leadership"
+                        loading="lazy"
                         class="relative aspect-[4/5] w-full rounded-3xl object-cover object-top shadow-xl"
                     />
                 </div>
@@ -192,32 +188,8 @@ const ceoImage = computed<string>(() => {
                             Meet Saturday Emomotimi Charles, CEO
                         </h2>
                     </div>
-                    <div
-                        class="space-y-4 text-base leading-relaxed text-brand-dark/70"
-                    >
-                        <p>
-                            Under the leadership of Saturday Emomotimi Charles,
-                            BLOMFREE &amp; CO. NIG. LTD has grown from a single
-                            vision into a multi-industry group serving customers
-                            right across Nigeria.
-                        </p>
-                        <p>
-                            That vision is simple: make quality accessible.
-                            Whether it is a flood-free plot of land, a healthy
-                            well-bred animal, a wardrobe upgrade, or the latest
-                            device, every BLOMFREE division is held to the same
-                            uncompromising standard.
-                        </p>
-                        <p>
-                            Trust is earned through consistency. We say what we
-                            will do, and we do it &mdash; and that is why our
-                            customers keep coming back, and keep bringing others
-                            with them.
-                        </p>
-                    </div>
-                    <PullQuote cite="Saturday Emomotimi Charles, CEO">
-                        Quality is Priceless
-                    </PullQuote>
+                    <p class="text-base leading-relaxed text-brand-dark/70">BLOMFREE &amp; CO. NIG. LTD brings several businesses together around one guiding idea: Quality is Priceless. Explore our story and the people behind the company.</p>
+                    <Button href="/about" variant="outline">Read our story</Button>
                 </div>
             </div>
         </Section>
@@ -229,22 +201,23 @@ const ceoImage = computed<string>(() => {
                 <h2
                     class="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl"
                 >
-                    Four divisions, one standard of quality
+                    Five businesses, one commitment to quality
                 </h2>
                 <p class="mt-4 text-base text-brand-dark/70">
-                    Explore the four arms of BLOMFREE &amp; CO. &mdash; each
-                    built to deliver value you can trust.
+                    Discover our real estate, animals, fashion, technology, and upcoming automobile division.
                 </p>
             </div>
             <div class="mt-10 grid gap-6 sm:grid-cols-2">
                 <SubsidiaryCard
                     v-for="(item, i) in subsidiaries"
-                    :key="item.href"
+                    :key="item.name"
                     v-reveal="i * 80"
                     :name="item.name"
                     :tagline="item.tagline"
                     :href="item.href"
                     :icon="item.icon"
+                    :image="item.image"
+                    :coming-soon="item.comingSoon"
                 />
             </div>
         </Section>
@@ -298,6 +271,7 @@ const ceoImage = computed<string>(() => {
                         <div class="aspect-[4/3] w-full bg-brand-cream">
                             <img
                                 v-if="item.image"
+                                loading="lazy"
                                 :src="item.image"
                                 :alt="item.title"
                                 class="h-full w-full object-cover"
@@ -307,6 +281,9 @@ const ceoImage = computed<string>(() => {
                             <h3 class="font-bold tracking-tight">
                                 {{ item.title }}
                             </h3>
+                            <p v-if="item.price" class="text-lg font-extrabold text-brand-dark">₦{{ item.price.toLocaleString() }}</p>
+                            <p v-if="item.detail" class="text-xs text-brand-dark/60">{{ item.detail }}</p>
+                            <p v-if="item.installments" class="text-xs font-semibold text-brand-orange">Installments available</p>
                             <p
                                 v-if="item.meta"
                                 class="text-sm text-brand-dark/60"
@@ -339,36 +316,44 @@ const ceoImage = computed<string>(() => {
             </div>
         </Section>
 
-        <!-- 6. Trust band -->
         <Section>
-            <div
-                class="rounded-3xl bg-white px-6 py-10 shadow-md ring-1 ring-black/5 sm:px-10 sm:py-12"
-            >
-                <div class="grid grid-cols-2 gap-8 lg:grid-cols-4">
-                    <div
-                        v-for="(stat, i) in stats"
-                        :key="stat.label"
-                        v-reveal="i * 80"
-                        class="text-center"
-                    >
-                        <p
-                            class="text-3xl font-extrabold tracking-tight text-brand-orange sm:text-4xl"
-                        >
-                            {{ stat.value }}
-                        </p>
-                        <p
-                            class="mt-1.5 text-sm font-semibold text-brand-dark/60"
-                        >
-                            {{ stat.label }}
-                        </p>
+            <div class="grid overflow-hidden rounded-3xl bg-brand-dark text-white lg:grid-cols-2">
+                <div class="p-8 sm:p-12 lg:p-16">
+                    <Badge variant="info">Coming soon</Badge>
+                    <h2 class="mt-4 text-3xl font-extrabold sm:text-4xl">Meet BLOMWHEELS Automobile</h2>
+                    <p class="mt-5 max-w-lg leading-relaxed text-white/75">We are preparing a new destination for brand-new, foreign-used and Nigerian-used vehicles. Inventory is not yet available online; contact us to learn more.</p>
+                    <Button href="/contact" size="lg" class="mt-8">Enquire about BLOMWHEELS</Button>
+                </div>
+                <div class="min-h-64 bg-gradient-to-br from-brand-orange via-orange-600 to-brand-dark p-10 lg:min-h-full">
+                    <div class="flex h-full items-end rounded-2xl border border-white/25 p-8">
+                        <span class="text-4xl font-black tracking-tight sm:text-5xl">BLOMWHEELS<span class="block text-lg font-medium">A new road is opening.</span></span>
                     </div>
                 </div>
             </div>
         </Section>
+        <Section>
+            <div class="grid gap-10 lg:grid-cols-2">
+                <div><Badge variant="info">Why BLOMFREE</Badge><h2 class="mt-3 text-3xl font-extrabold">Quality across every division</h2><p class="mt-4 leading-relaxed text-brand-dark/70">Browse clear listings, compare available options, and contact our team when you need help. Eligible purchases support secure online payment.</p></div>
+                <div class="grid gap-4 sm:grid-cols-2"><div v-for="reason in ['Real listings and clear details', 'Five connected businesses', 'Support when you need it', 'Secure payment for eligible orders']" :key="reason" class="rounded-2xl bg-white p-6 font-semibold shadow-sm ring-1 ring-black/5">{{ reason }}</div></div>
+            </div>
+        </Section>
+        <Section>
+            <div class="rounded-3xl bg-white p-7 shadow-sm sm:p-12">
+                <Badge variant="info">Flexible payments</Badge>
+                <h2 class="mt-3 text-3xl font-extrabold">Plan eligible purchases</h2>
+                <p class="mt-4 max-w-2xl text-brand-dark/70">Installment plans are available for selected land and gadgets where enabled. Review the down payment and terms before applying, then track progress in your account.</p>
+                <ol class="mt-7 grid gap-4 sm:grid-cols-4"><li v-for="(step, i) in ['Choose an eligible item', 'Review terms', 'Apply and pay', 'Track your plan']" :key="step" class="rounded-xl bg-brand-cream p-5"><span class="font-bold text-brand-orange">0{{ i + 1 }}</span><p class="mt-2 font-semibold">{{ step }}</p></li></ol>
+                <Link href="/installments" class="mt-7 inline-block font-semibold text-brand-orange hover:underline">Learn about installments →</Link>
+            </div>
+        </Section>
+        <Section>
+            <h2 class="text-3xl font-extrabold">How BLOMFREE works</h2>
+            <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4"><div v-for="(step, i) in [{title:'Explore',text:'Browse real products, animals and land.'},{title:'Choose',text:'Review images, prices and available options.'},{title:'Connect or purchase',text:'Order eligible items online or request an inspection.'},{title:'Track',text:'Follow orders or applications through your account.'}]" :key="step.title" class="rounded-2xl border border-brand-dark/10 p-6"><span class="text-sm font-bold text-brand-orange">0{{ i + 1 }}</span><h3 class="mt-3 text-lg font-bold">{{ step.title }}</h3><p class="mt-2 text-sm text-brand-dark/65">{{ step.text }}</p></div></div>
+        </Section>
 
         <!-- 7. Final CTA band -->
         <CtaBand
-            title="Ready to experience quality?"
+            title="Whatever You’re Looking For, Quality Comes First."
             subtitle="Reach out today — our team is ready to help you find land, livestock, fashion, or the latest gadgets."
         />
     </AppLayout>

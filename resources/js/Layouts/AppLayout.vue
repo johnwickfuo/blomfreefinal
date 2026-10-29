@@ -20,6 +20,7 @@ const navLinks: NavLink[] = [
     { label: 'Kennel & Farm', href: '/kennel-farm' },
     { label: 'Collections', href: '/collections' },
     { label: 'Gadgets', href: '/gadgets' },
+    { label: 'BLOMWHEELS · Soon', href: '/contact' },
     { label: 'Affiliate', href: '/affiliate' },
     { label: 'Contact', href: '/contact' },
 ];
@@ -261,7 +262,7 @@ onBeforeUnmount(() => {
                             Quality is Priceless
                         </p>
                         <p class="mt-2 text-sm text-white/60">
-                            BLOMFREE &amp; CO. NIG. LTD
+                            BLOMFREE &amp; CO. NIG. LTD brings together real estate, animals, fashion, technology and our upcoming automobile division.
                         </p>
                     </div>
 
