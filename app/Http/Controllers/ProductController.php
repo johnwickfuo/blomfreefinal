@@ -63,7 +63,7 @@ class ProductController extends Controller
             ELSE products.base_price END";
         foreach (['price_min' => '>=', 'price_max' => '<='] as $key => $operator) {
             if (isset($filters[$key]) && $filters[$key] !== '') {
-                $query->whereRaw("($effectivePrice) $operator ?", [(float) $filters[$key]]);
+                $query->whereRaw("($effectivePrice) $operator CAST(? AS DECIMAL(16,2))", [(float) $filters[$key]]);
             }
         }
         match ($sort) {
