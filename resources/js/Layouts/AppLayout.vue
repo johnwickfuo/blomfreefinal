@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue';
 import { Link, router, usePage } from '@inertiajs/vue3';
-import { Menu, X, ShoppingCart, Search, Instagram, Facebook, AlertTriangle, UserCircle, Heart, LayoutGrid, House, UserRound } from 'lucide-vue-next';
+import { Menu, X, ShoppingCart, Search, AlertTriangle, UserCircle, Heart, LayoutGrid, House, UserRound } from 'lucide-vue-next';
 import CartLineItem from '@/Components/CartLineItem.vue';
 import Button from '@/Components/Button.vue';
 import { formatNaira } from '@/lib/format';
@@ -270,52 +270,16 @@ onBeforeUnmount(() => {
                         </ul>
                     </div>
 
-                    <!-- Social -->
+                    <!-- Explore -->
                     <div>
-                        <h3
-                            class="text-sm font-bold uppercase tracking-wider text-white/90"
-                        >
-                            Follow
-                        </h3>
-                        <div class="mt-4 flex gap-3">
-                            <a
-                                href="https://instagram.com/Saturday_Emomotimi_Charles"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                aria-label="Instagram"
-                                class="rounded-full bg-white/10 p-2.5 text-white/80 transition-colors hover:bg-brand-orange hover:text-white"
-                            >
-                                <Instagram class="h-5 w-5" />
-                            </a>
-                            <!-- Lucide has no TikTok glyph; inline brand SVG used. -->
-                            <a
-                                href="https://tiktok.com/@Saturday_Emomotimi_Charles"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                aria-label="TikTok"
-                                class="rounded-full bg-white/10 p-2.5 text-white/80 transition-colors hover:bg-brand-orange hover:text-white"
-                            >
-                                <svg
-                                    viewBox="0 0 24 24"
-                                    fill="currentColor"
-                                    class="h-5 w-5"
-                                    aria-hidden="true"
-                                >
-                                    <path
-                                        d="M16.5 3c.3 2.3 1.6 3.9 3.9 4.1v2.7c-1.4.1-2.7-.3-3.9-1v6.6c0 4.2-4.6 6.9-8.2 4.8-2.3-1.4-3-4.4-1.6-6.8 1-1.7 2.9-2.6 4.8-2.4v2.8c-.5-.1-1-.1-1.5.1-1.4.5-1.9 2.2-1 3.4.9 1.2 2.9.9 3.3-.6.07-.27.1-.55.1-.83V3h3.6z"
-                                    />
-                                </svg>
-                            </a>
-                            <a
-                                href="https://facebook.com/Saturday_Emomotimi_Charles"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                aria-label="Facebook"
-                                class="rounded-full bg-white/10 p-2.5 text-white/80 transition-colors hover:bg-brand-orange hover:text-white"
-                            >
-                                <Facebook class="h-5 w-5" />
-                            </a>
-                        </div>
+                        <h3 class="text-sm font-bold uppercase tracking-wider text-white/90">Explore</h3>
+                        <ul class="mt-4 space-y-3 text-sm">
+                            <li><Link href="/gadgets" class="text-white/75 hover:text-white">Gadgets</Link></li>
+                            <li><Link href="/collections" class="text-white/75 hover:text-white">Fashion</Link></li>
+                            <li><Link href="/automobiles" class="text-white/75 hover:text-white">Automobiles</Link></li>
+                            <li><Link href="/lands" class="text-white/75 hover:text-white">Real Estate</Link></li>
+                            <li><Link href="/kennel-farm" class="text-white/75 hover:text-white">Kennel & Farm</Link></li>
+                        </ul>
                     </div>
                 </div>
 
@@ -326,25 +290,7 @@ onBeforeUnmount(() => {
                         &copy; {{ year }} BLOMFREE &amp; CO. NIG. LTD. All
                         rights reserved.
                     </p>
-                    <p class="mt-2">
-                        Built by
-                        <a
-                            href="https://wa.me/2349064140868"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="font-semibold text-brand-orange transition-colors hover:text-brand-orangeDark"
-                        >
-                            Africode Studio</a>
-                        &nbsp;&middot;&nbsp;Want a site like this?
-                        <a
-                            href="https://wa.me/2349064140868"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="font-semibold text-brand-orange transition-colors hover:text-brand-orangeDark"
-                        >
-                            Chat on WhatsApp
-                        </a>
-                    </p>
+
                 </div>
             </div>
         </footer>
@@ -355,7 +301,7 @@ onBeforeUnmount(() => {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Chat with us on WhatsApp"
-            class="fixed bottom-5 right-5 z-20 flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg shadow-black/25 transition-transform duration-200 hover:scale-110 sm:bottom-6 sm:right-6"
+            class="fixed bottom-[calc(5.5rem+env(safe-area-inset-bottom))] right-5 z-20 flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg shadow-black/25 transition-transform duration-200 hover:scale-110 sm:bottom-6 sm:right-6"
         >
             <svg
                 viewBox="0 0 24 24"
