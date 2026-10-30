@@ -14,7 +14,7 @@ class SitemapController extends Controller
     {
         $urls = [];
 
-        $staticPaths = ['/', '/about', '/contact', '/lands', '/kennel-farm', '/collections', '/gadgets', '/automobiles', '/track'];
+        $staticPaths = ['/', '/about', '/contact', '/lands', '/kennel-farm', '/collections', '/gadgets', '/automobiles', '/categories', '/how-it-works', '/payments', '/help', '/track'];
         foreach ($staticPaths as $path) {
             $urls[] = ['loc' => url($path), 'lastmod' => now()->toIso8601String(), 'changefreq' => 'weekly'];
         }

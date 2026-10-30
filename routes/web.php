@@ -14,6 +14,7 @@ use App\Http\Controllers\LandController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\MarketplaceHomeController;
+use App\Http\Controllers\MarketplaceCategoryController;
 use App\Http\Controllers\ProductReviewController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SitemapController;
@@ -27,6 +28,12 @@ Route::get('/saved', SavedListingController::class)->name('saved');
 Route::get('/search', SearchController::class)->name('search')->middleware('throttle:40,1');
 
 Route::get('/', MarketplaceHomeController::class)->name('home')->middleware('edge-cache');
+Route::get('/categories', MarketplaceCategoryController::class)->name('categories.index');
+Route::get('/how-it-works', fn () => Inertia::render('Marketplace/HowItWorks'))->name('marketplace.how');
+Route::get('/payments', fn () => Inertia::render('Marketplace/Payments'))->name('marketplace.payments');
+Route::get('/help', fn () => Inertia::render('Marketplace/Help'))->name('marketplace.help');
+Route::get('/my', fn () => Inertia::render('Marketplace/AccountHub'))->name('marketplace.account');
+
 
 Route::get('/insights', function () {
     return Inertia::render('Articles/Index', [
