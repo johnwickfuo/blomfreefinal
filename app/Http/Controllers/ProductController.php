@@ -33,44 +33,59 @@ class ProductController extends Controller
 
     private function index(Request $request, string $subsidiary): Response
     {
-        $sort = $request->string('sort')->toString() ?: 'featured';
-        $category = $request->string('category')->toString();
+        $filters = $request->validate([
+            'category' => ['nullable', 'string', 'max:100'],
+            'sort' => ['nullable', 'in:featured,newest,price_asc,price_desc'],
+            'price_min' => ['nullable', 'numeric', 'min:0'],
+            'price_max' => ['nullable', 'numeric', 'min:0'],
+            'stock_only' => ['nullable', 'boolean'],
+        ]);
+        $category = $filters['category'] ?? null;
+        $sort = $filters['sort'] ?? 'featured';
+        $stockOnly = ! isset($filters['stock_only']) || (bool) $filters['stock_only'];
 
-        $query = Product::query()
-            ->with(['variants', 'media'])
-            ->where('subsidiary', $subsidiary)
-            ->where('is_published', true);
+        $query = Product::query()->with(['variants', 'media'])
+            ->where('subsidiary', $subsidiary)->where('is_published', true);
 
-        if ($category !== '') {
-            $query->where('category', $category);
+        if ($category) $query->where('category', $category);
+        if ($stockOnly) {
+            $query->where(fn ($q) => $q->where(fn ($simple) => $simple->where('has_variants', false)->where('stock', '>', 0))
+                ->orWhere(fn ($variant) => $variant->where('has_variants', true)
+                    ->whereHas('variants', fn ($v) => $v->where('stock', '>', 0))));
         }
 
+        // Match Product::display_price even when every variant has a common override.
+        $effectivePrice = "CASE WHEN products.has_variants = 1
+            AND EXISTS (SELECT 1 FROM product_variants v WHERE v.product_id = products.id)
+            AND NOT EXISTS (SELECT 1 FROM product_variants v WHERE v.product_id = products.id AND v.price_override IS NULL)
+            AND (SELECT COUNT(DISTINCT v.price_override) FROM product_variants v WHERE v.product_id = products.id) = 1
+            THEN (SELECT MIN(v.price_override) FROM product_variants v WHERE v.product_id = products.id)
+            ELSE products.base_price END";
+        foreach (['price_min' => '>=', 'price_max' => '<='] as $key => $operator) {
+            if (isset($filters[$key]) && $filters[$key] !== '') {
+                $query->whereRaw("($effectivePrice) $operator ?", [(float) $filters[$key]]);
+            }
+        }
         match ($sort) {
             'newest' => $query->latest(),
-            'price_asc' => $query->orderBy('base_price'),
-            'price_desc' => $query->orderByDesc('base_price'),
+            'price_asc' => $query->orderByRaw("($effectivePrice) ASC"),
+            'price_desc' => $query->orderByRaw("($effectivePrice) DESC"),
             default => $query->orderByDesc('is_featured')->orderBy('order'),
         };
-
-        $products = $query
-            ->paginate(12)
-            ->withQueryString()
+        $products = $query->orderByDesc('id')->paginate(12)->withQueryString()
             ->through(fn (Product $product): array => $this->cardData($product));
 
-        $categories = Product::query()
-            ->where('subsidiary', $subsidiary)
-            ->where('is_published', true)
-            ->distinct()
-            ->orderBy('category')
-            ->pluck('category');
+        $categories = Product::query()->where('subsidiary', $subsidiary)
+            ->where('is_published', true)->distinct()->orderBy('category')->pluck('category');
 
         return Inertia::render('Shop/Catalog', [
-            'subsidiary' => $subsidiary,
-            'products' => $products,
-            'categories' => $categories,
+            'subsidiary' => $subsidiary, 'products' => $products, 'categories' => $categories,
             'filters' => [
-                'category' => $category !== '' ? $category : null,
+                'category' => $category,
                 'sort' => $sort,
+                'price_min' => $filters['price_min'] ?? null,
+                'price_max' => $filters['price_max'] ?? null,
+                'stock_only' => $stockOnly,
             ],
         ]);
     }

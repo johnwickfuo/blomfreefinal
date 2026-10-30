@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
+import { router } from '@inertiajs/vue3';
 import { Dna, ShieldCheck, Syringe, LifeBuoy, HeartHandshake } from 'lucide-vue-next';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Hero from '@/Components/Hero.vue';
@@ -12,6 +13,7 @@ import type { AnimalsByCategory, TabCategory } from '@/types/models';
 
 const props = defineProps<{
     animalsByCategory: AnimalsByCategory;
+    filters?: { category?: TabCategory; price_min?: number; price_max?: number };
 }>();
 
 interface Tab {
@@ -27,10 +29,20 @@ const tabs: Tab[] = [
     { key: 'grasscutter', label: 'Grasscutters', hash: 'grasscutters' },
 ];
 
-const activeTab = ref<TabCategory>('dog');
+const activeTab = ref<TabCategory>(props.filters?.category ?? 'dog');
+const minPrice = ref(props.filters?.price_min?.toString() ?? '');
+const maxPrice = ref(props.filters?.price_max?.toString() ?? '');
+function filterPrices(): void {
+    const p: Record<string,string> = { category: activeTab.value };
+    if (minPrice.value) p.price_min = minPrice.value;
+    if (maxPrice.value) p.price_max = maxPrice.value;
+    router.get('/kennel-farm', p, { preserveScroll: true });
+}
 
 onMounted(() => {
     const hash = window.location.hash.replace('#', '');
+    const queryCategory = new URLSearchParams(window.location.search).get('category');
+    if (tabs.some(t => t.key === queryCategory)) activeTab.value = queryCategory as TabCategory;
     const matched = tabs.find((tab) => tab.hash === hash);
     if (matched) {
         activeTab.value = matched.key;
@@ -40,6 +52,7 @@ onMounted(() => {
 function selectTab(tab: Tab): void {
     activeTab.value = tab.key;
     history.replaceState(null, '', `#${tab.hash}`);
+    if (minPrice.value || maxPrice.value) filterPrices();
 }
 
 const activeAnimals = computed(() => props.animalsByCategory[activeTab.value] ?? []);
@@ -112,6 +125,12 @@ const reasons = [
         </Hero>
 
         <Section>
+            <form class="mb-6 flex flex-wrap items-end gap-3 rounded-2xl bg-white p-4" @submit.prevent="filterPrices">
+                <label class="text-xs font-bold">Min price (₦)<input v-model="minPrice" type="number" min="0" class="mt-1 block w-36 rounded-xl border-gray-300 text-sm" /></label>
+                <label class="text-xs font-bold">Max price (₦)<input v-model="maxPrice" type="number" min="0" class="mt-1 block w-36 rounded-xl border-gray-300 text-sm" /></label>
+                <button type="submit" class="rounded-xl bg-brand-orange px-4 py-2.5 text-sm font-bold text-white">Filter prices</button>
+                <button type="button" class="rounded-xl px-4 py-2 text-sm font-semibold" @click="minPrice='';maxPrice='';filterPrices()">Clear</button>
+            </form>
             <!-- Category tabs -->
             <div
                 class="flex flex-wrap gap-2 border-b border-brand-dark/10 pb-1"

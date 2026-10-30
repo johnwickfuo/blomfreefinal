@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Animal;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -11,13 +12,20 @@ class AnimalController extends Controller
 {
     private const TAB_CATEGORIES = ['dog', 'cat', 'rabbit', 'grasscutter'];
 
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $animals = Animal::query()
+        $filters = $request->validate([
+            'category' => ['nullable', 'in:dog,cat,rabbit,grasscutter'],
+            'price_min' => ['nullable', 'numeric', 'min:0'],
+            'price_max' => ['nullable', 'numeric', 'min:0'],
+        ]);
+        $query = Animal::query()
             ->with('media')
             ->where(fn (Builder $query) => $query
                 ->where('listing_type', 'pool')
                 ->orWhere('availability', '!=', 'sold'))
+            ->when(isset($filters['price_min']) && $filters['price_min'] !== '', fn (Builder $q) => $q->where('price', '>=', (float) $filters['price_min']))
+            ->when(isset($filters['price_max']) && $filters['price_max'] !== '', fn (Builder $q) => $q->where('price', '<=', (float) $filters['price_max']))
             ->orderByDesc('is_featured')
             ->orderBy('order')
             ->get()
@@ -30,6 +38,7 @@ class AnimalController extends Controller
 
         return Inertia::render('KennelFarm/Index', [
             'animalsByCategory' => $animalsByCategory,
+            'filters' => $filters,
         ]);
     }
 
