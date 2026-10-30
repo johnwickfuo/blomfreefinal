@@ -23,7 +23,7 @@ class InquiryController extends Controller
         }
 
         $data = $request->validated();
-        if (($data['subject'] ?? '') === 'automobiles') {
+        if (($data['subject'] ?? '') === 'automobiles' && ! empty($data['vehicle_id'])) {
             $vehicle = Vehicle::published()->where('status', 'available')->findOrFail($data['vehicle_id']);
             $data['related_url'] = route('automobiles.show', $vehicle);
         }

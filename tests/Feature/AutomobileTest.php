@@ -64,6 +64,16 @@ class AutomobileTest extends TestCase
         $this->post('/inquiries', $this->inquiryData($vehicle))->assertSessionHasErrors('vehicle_id');
     }
 
+    public function test_general_automobile_inquiry_does_not_require_a_selected_vehicle(): void
+    {
+        Mail::fake();
+        $this->post('/inquiries', [
+            'name' => 'Sample Buyer', 'email' => 'buyer@example.test', 'phone' => '08012345678',
+            'subject' => 'automobiles', 'message' => 'Can you help me source a family vehicle?',
+        ])->assertRedirect(route('contact.index'));
+        $this->assertDatabaseHas('inquiries', ['subject' => 'automobiles', 'vehicle_id' => null]);
+    }
+
     public function test_available_vehicle_receives_inquiry_and_inspection(): void
     {
         Mail::fake();
