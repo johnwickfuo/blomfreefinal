@@ -11,7 +11,7 @@ class MarketplacePlacement extends Model
     public const SECTIONS = [
         'featured' => 'Featured Across BLOMFREE',
         'deals' => "Today's Deals (real product discounts only)",
-        'spotlight' => 'Editor's Picks',
+        'spotlight' => "Editor's Picks",
     ];
 
     public const ITEM_TYPES = [
