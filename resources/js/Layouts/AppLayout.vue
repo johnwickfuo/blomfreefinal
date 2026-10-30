@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue';
 import { Link, router, usePage } from '@inertiajs/vue3';
-import { Menu, X, ShoppingCart, Search, Instagram, Facebook, AlertTriangle, UserCircle } from 'lucide-vue-next';
+import { Menu, X, ShoppingCart, Search, Instagram, Facebook, AlertTriangle, UserCircle, Heart, LayoutGrid, House, UserRound } from 'lucide-vue-next';
 import CartLineItem from '@/Components/CartLineItem.vue';
 import Button from '@/Components/Button.vue';
 import { formatNaira } from '@/lib/format';
@@ -15,16 +15,13 @@ interface NavLink {
 
 const navLinks: NavLink[] = [
     { label: 'Home', href: '/' },
-    { label: 'About', href: '/about' },
-    { label: 'Search', href: '/search' },
-    { label: 'Saved', href: '/saved' },
-    { label: 'Real Estate', href: '/lands' },
-    { label: 'Kennel & Farm', href: '/kennel-farm' },
-    { label: 'Collections', href: '/collections' },
+    { label: 'Categories', href: '/categories' },
     { label: 'Gadgets', href: '/gadgets' },
-    { label: 'BLOMWHEELS', href: '/automobiles' },
-    { label: 'Affiliate', href: '/affiliate' },
-    { label: 'Contact', href: '/contact' },
+    { label: 'Fashion', href: '/collections' },
+    { label: 'Cars', href: '/automobiles' },
+    { label: 'Land', href: '/lands' },
+    { label: 'Animals', href: '/kennel-farm' },
+    { label: 'Help', href: '/help' },
 ];
 
 const phones = [
@@ -38,6 +35,8 @@ const year = new Date().getFullYear();
 const mobileOpen = ref(false);
 const cartOpen = ref(false);
 const scrolled = ref(false);
+const headerQuery = ref('');
+const submitHeaderSearch = (): void => { router.get('/search', { q: headerQuery.value.trim() }); };
 
 const page = usePage();
 
@@ -111,124 +110,56 @@ onBeforeUnmount(() => {
 
 <template>
     <div class="flex min-h-screen flex-col bg-brand-cream text-brand-dark">
-        <!-- Header -->
-        <header
-            class="sticky top-0 z-30 bg-brand-dark text-white transition-shadow duration-300"
-            :class="
-                scrolled ? 'shadow-lg shadow-black/30' : 'border-b border-white/10'
-            "
-        >
-            <div
-                class="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:h-20 sm:px-6 lg:px-8"
-            >
-                <!-- Wordmark -->
-                <Link
-                    href="/"
-                    class="flex items-center gap-2.5"
-                    @click="closeAll"
-                >
-                    <img
-                        v-if="siteLogo"
-                        :src="siteLogo"
-                        alt="BLOMFREE & CO."
-                        class="h-12 w-auto max-w-[180px] shrink-0 object-contain sm:h-14 sm:max-w-[220px]"
-                    />
-                    <template v-else>
-                        <!-- Inline SVG bird placeholder (used until an admin uploads a logo) -->
-                        <svg
-                            viewBox="0 0 32 32"
-                            fill="currentColor"
-                            class="h-7 w-7 shrink-0 text-brand-orange sm:h-8 sm:w-8"
-                            aria-hidden="true"
-                        >
-                            <path
-                                d="M31 7.3c-1.1.5-2.3.8-3.5 1 1.3-.8 2.2-2 2.7-3.4-1.2.7-2.5 1.2-3.9 1.5C25.1 5.2 23.5 4.5 21.8 4.5c-3.4 0-6.1 2.7-6.1 6.1 0 .5.05.95.15 1.4-5.1-.25-9.6-2.7-12.6-6.4-.5.9-.85 2-.85 3.1 0 2.1 1.07 4 2.7 5.1-1-.03-1.95-.3-2.77-.76v.08c0 3 2.1 5.5 4.9 6-.5.15-1.05.2-1.6.2-.4 0-.78-.04-1.15-.1.78 2.4 3 4.2 5.65 4.25-2.07 1.62-4.68 2.6-7.5 2.6-.5 0-.97-.03-1.45-.08C3.9 27.9 7.1 29 10.55 29c11.45 0 17.7-9.5 17.7-17.7v-.8c1.2-.88 2.27-1.98 3.1-3.2z"
-                            />
-                        </svg>
-                        <span
-                            class="text-lg font-extrabold tracking-tight sm:text-xl"
-                        >
-                            BLOMFREE
-                        </span>
-                    </template>
+        <!-- Marketplace header -->
+        <header class="sticky top-0 z-30 bg-white text-brand-dark shadow-sm">
+            <div class="mx-auto flex h-16 max-w-7xl items-center gap-3 px-3 sm:h-20 sm:px-6 lg:px-8">
+                <Link href="/" class="flex shrink-0 items-center gap-2" @click="closeAll">
+                    <img v-if="siteLogo" :src="siteLogo" alt="BLOMFREE & CO." class="h-10 w-auto max-w-[150px] object-contain sm:h-12 sm:max-w-[200px]" />
+                    <template v-else><span class="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-orange text-xl font-black italic text-white">B</span><span class="text-lg font-extrabold tracking-tight sm:text-xl">BLOM<span class="text-brand-orange">FREE</span></span></template>
                 </Link>
-
-                <!-- Desktop nav -->
-                <nav class="hidden items-center gap-1 xl:flex">
-                    <Link
-                        v-for="link in navLinks"
-                        :key="link.href"
-                        :href="link.href"
-                        class="rounded-full px-3.5 py-2 text-sm font-semibold transition-colors"
-                        :class="
-                            isActive(link.href)
-                                ? 'text-brand-orange'
-                                : 'text-white/80 hover:text-white'
-                        "
-                    >
-                        {{ link.label }}
-                    </Link>
-                </nav>
-
-                <!-- Right cluster: auth + cart + hamburger -->
-                <div class="flex items-center gap-1 sm:gap-2">
-                    <Link href="/search" aria-label="Search all BLOMFREE divisions" class="rounded-full p-2.5 text-white/90 transition-colors hover:bg-white/10"><Search class="h-5 w-5" /></Link>
-                    <!-- Logged-out: Log in + Register on desktop -->
-                    <template v-if="!authUser">
-                        <Link
-                            href="/login"
-                            class="hidden rounded-full px-3.5 py-2 text-sm font-semibold text-white/80 transition-colors hover:text-white xl:inline-flex"
-                        >
-                            Log in
-                        </Link>
-                        <Link
-                            href="/register"
-                            class="hidden rounded-full bg-brand-orange px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-orangeDark xl:inline-flex"
-                        >
-                            Register
-                        </Link>
-                    </template>
-                    <!-- Logged-in: account link on desktop -->
-                    <Link
-                        v-else
-                        :href="accountHref"
-                        class="hidden items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-semibold text-white/80 transition-colors hover:text-white xl:inline-flex"
-                    >
-                        <UserCircle class="h-4 w-4" />
-                        My account
-                    </Link>
-
-                    <button
-                        type="button"
-                        class="relative rounded-full p-2.5 text-white/90 transition-colors hover:bg-white/10 hover:text-white"
-                        aria-label="Open cart"
-                        @click="cartOpen = true"
-                    >
+                <form class="ml-2 hidden max-w-2xl flex-1 items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 pl-3 md:flex" role="search" @submit.prevent="submitHeaderSearch">
+                    <Search class="h-5 w-5 shrink-0 text-brand-dark/45" />
+                    <label for="header-search" class="sr-only">Search marketplace</label>
+                    <input id="header-search" v-model="headerQuery" type="search" placeholder="Search products, cars, land and more…" class="min-w-0 flex-1 border-0 bg-transparent px-2 py-3 text-sm focus:ring-0" />
+                    <button type="submit" class="rounded-r-xl bg-brand-orange px-5 py-3 text-sm font-bold text-white">Search</button>
+                </form>
+                <div class="ml-auto flex items-center gap-1 sm:gap-2">
+                    <Link href="/search" aria-label="Search marketplace" class="rounded-full p-2 text-brand-dark md:hidden"><Search class="h-5 w-5" /></Link>
+                    <Link href="/saved" aria-label="Saved listings" class="hidden rounded-full p-2 text-brand-dark hover:bg-brand-cream sm:inline-flex"><Heart class="h-5 w-5" /></Link>
+                    <Link :href="authUser ? accountHref : '/my'" aria-label="My account" class="hidden rounded-full p-2 text-brand-dark hover:bg-brand-cream sm:inline-flex"><UserRound class="h-5 w-5" /></Link>
+                    <button type="button" aria-label="Open cart" class="relative hidden rounded-full p-2 text-brand-dark hover:bg-brand-cream sm:inline-flex" @click="cartOpen = true">
                         <ShoppingCart class="h-5 w-5" />
-                        <span
-                            v-if="cart.count > 0"
-                            class="absolute -right-0.5 -top-0.5 flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-brand-orange px-1 text-[11px] font-bold leading-none text-white"
-                        >
-                            {{ cart.count > 99 ? '99+' : cart.count }}
-                        </span>
+                        <span v-if="cart.count > 0" class="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-brand-orange px-1 text-[11px] font-bold text-white">{{ cart.count > 99 ? '99+' : cart.count }}</span>
                     </button>
-
-                    <button
-                        type="button"
-                        class="rounded-full p-2.5 text-white/90 transition-colors hover:bg-white/10 hover:text-white xl:hidden"
-                        aria-label="Open menu"
-                        @click="mobileOpen = true"
-                    >
-                        <Menu class="h-5 w-5" />
-                    </button>
+                    <button type="button" aria-label="Open menu" class="rounded-full p-2 text-brand-dark hover:bg-brand-cream xl:hidden" @click="mobileOpen = true"><Menu class="h-5 w-5" /></button>
                 </div>
             </div>
+            <nav aria-label="Shop divisions" class="hidden border-t border-gray-100 xl:block">
+                <div class="mx-auto flex max-w-7xl items-center justify-between gap-2 px-6 py-2 lg:px-8">
+                    <Link v-for="link in navLinks" :key="link.href" :href="link.href" class="rounded-lg px-2 py-1.5 text-sm font-semibold transition-colors"
+                        :class="isActive(link.href) ? 'bg-brand-cream text-brand-orange' : 'text-brand-dark/75 hover:text-brand-orange'">{{ link.label }}</Link>
+                </div>
+            </nav>
         </header>
 
         <!-- Page content -->
         <main id="main-content" tabindex="-1" class="flex-1">
             <slot />
         </main>
+
+        <!-- Fixed mobile marketplace navigation -->
+        <nav aria-label="Mobile marketplace navigation" class="fixed inset-x-0 bottom-0 z-30 border-t border-gray-200 bg-white/95 pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_25px_rgba(0,0,0,0.08)] backdrop-blur md:hidden">
+            <div class="grid h-16 grid-cols-5">
+                <Link href="/" :aria-current="page.url === '/' ? 'page' : undefined" class="flex flex-col items-center justify-center gap-1 text-[10px] font-bold" :class="page.url==='/'?'text-brand-orange':'text-brand-dark/65'"><House class="h-5 w-5" /> Home</Link>
+                <Link href="/categories" :aria-current="page.url.startsWith('/categories') ? 'page' : undefined" class="flex flex-col items-center justify-center gap-1 text-[10px] font-bold" :class="page.url.startsWith('/categories')?'text-brand-orange':'text-brand-dark/65'"><LayoutGrid class="h-5 w-5" /> Categories</Link>
+                <Link href="/saved" :aria-current="page.url.startsWith('/saved') ? 'page' : undefined" class="flex flex-col items-center justify-center gap-1 text-[10px] font-bold" :class="page.url.startsWith('/saved')?'text-brand-orange':'text-brand-dark/65'"><Heart class="h-5 w-5" /> Saved</Link>
+                <Link href="/cart" :aria-current="page.url.startsWith('/cart') ? 'page' : undefined" class="relative flex flex-col items-center justify-center gap-1 text-[10px] font-bold" :class="page.url.startsWith('/cart')?'text-brand-orange':'text-brand-dark/65'">
+                    <ShoppingCart class="h-5 w-5" /><span v-if="cart.count > 0" class="absolute left-[55%] top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-brand-orange px-0.5 text-[9px] font-bold text-white">{{ cart.count > 99 ? '99+' : cart.count }}</span> Cart
+                </Link>
+                <Link href="/my" :aria-current="page.url.startsWith('/my') || page.url.startsWith('/account') ? 'page' : undefined" class="flex flex-col items-center justify-center gap-1 text-[10px] font-bold" :class="page.url.startsWith('/my') || page.url.startsWith('/account')?'text-brand-orange':'text-brand-dark/65'"><UserRound class="h-5 w-5" /> Account</Link>
+            </div>
+        </nav>
+        <div class="h-[calc(4rem+env(safe-area-inset-bottom))] md:hidden" aria-hidden="true"></div>
 
         <!-- Footer -->
         <footer class="bg-brand-dark text-white">
@@ -299,6 +230,15 @@ onBeforeUnmount(() => {
                         </ul>
                     </div>
 
+                    <div>
+                        <h3 class="text-sm font-bold uppercase tracking-wider text-white/90">Shopping Help</h3>
+                        <ul class="mt-4 space-y-3 text-sm">
+                            <li><Link href="/categories" class="text-white/75 hover:text-white">All categories</Link></li>
+                            <li><Link href="/how-it-works" class="text-white/75 hover:text-white">How it works</Link></li>
+                            <li><Link href="/payments" class="text-white/75 hover:text-white">Payment options</Link></li>
+                            <li><Link href="/help" class="text-white/75 hover:text-white">Help centre</Link></li>
+                        </ul>
+                    </div>
                     <!-- Contact -->
                     <div>
                         <h3
@@ -443,7 +383,7 @@ onBeforeUnmount(() => {
             <Transition name="slide">
                 <aside
                     v-if="mobileOpen"
-                    class="fixed inset-y-0 right-0 z-50 flex w-full max-w-xs flex-col bg-brand-dark text-white shadow-2xl"
+                    class="fixed inset-y-0 right-0 z-50 flex w-full max-w-xs flex-col overflow-y-auto bg-brand-dark text-white shadow-2xl"
                 >
                     <div
                         class="flex h-16 items-center justify-between px-5 sm:h-20"
