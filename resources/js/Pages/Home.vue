@@ -25,7 +25,7 @@ interface FeaturedItem {
     installments?: boolean;
 }
 
-type TabKey = 'lands' | 'animals' | 'collections' | 'gadgets';
+type TabKey = 'lands' | 'animals' | 'collections' | 'gadgets' | 'vehicles';
 
 type FeaturedData = Record<TabKey, FeaturedItem[]>;
 
@@ -45,6 +45,7 @@ const props = withDefaults(
             animals: [],
             collections: [],
             gadgets: [],
+            vehicles: [],
         }),
     },
 );
@@ -54,6 +55,7 @@ const tabs: { key: TabKey; label: string }[] = [
     { key: 'animals', label: 'Animals' },
     { key: 'collections', label: 'Collections' },
     { key: 'gadgets', label: 'Gadgets' },
+    { key: 'vehicles', label: 'Vehicles' },
 ];
 
 const activeTab = ref<TabKey>('lands');
@@ -210,7 +212,7 @@ const ceoImage = computed<string>(() => {
                     Five businesses, one commitment to quality
                 </h2>
                 <p class="mt-4 text-base text-brand-dark/70">
-                    Discover our real estate, animals, fashion, technology, and upcoming automobile division.
+                    Discover our real estate, animals, fashion, technology, and automobile divisions.
                 </p>
             </div>
             <div class="mt-10 grid gap-6 sm:grid-cols-2">
@@ -325,14 +327,14 @@ const ceoImage = computed<string>(() => {
         <Section>
             <div class="grid overflow-hidden rounded-3xl bg-brand-dark text-white lg:grid-cols-2">
                 <div class="p-8 sm:p-12 lg:p-16">
-                    <Badge variant="info">Coming soon</Badge>
+                    <Badge variant="info">Now available</Badge>
                     <h2 class="mt-4 text-3xl font-extrabold sm:text-4xl">Meet BLOMWHEELS Automobile</h2>
-                    <p class="mt-5 max-w-lg leading-relaxed text-white/75">We are preparing a new destination for brand-new, foreign-used and Nigerian-used vehicles. Inventory is not yet available online; contact us to learn more.</p>
-                    <Button href="/contact" size="lg" class="mt-8">Enquire about BLOMWHEELS</Button>
+                    <p class="mt-5 max-w-lg leading-relaxed text-white/75">Browse our latest brand-new, foreign-used and Nigerian-used vehicle listings, compare options, and book an inspection for available vehicles.</p>
+                    <Button href="/automobiles" size="lg" class="mt-8">Explore BLOMWHEELS vehicles</Button>
                 </div>
                 <div class="min-h-64 bg-gradient-to-br from-brand-orange via-orange-600 to-brand-dark p-10 lg:min-h-full">
                     <div class="flex h-full items-end rounded-2xl border border-white/25 p-8">
-                        <span class="text-4xl font-black tracking-tight sm:text-5xl">BLOMWHEELS<span class="block text-lg font-medium">A new road is opening.</span></span>
+                        <span class="text-4xl font-black tracking-tight sm:text-5xl">BLOMWHEELS<span class="block text-lg font-medium">Find your next drive.</span></span>
                     </div>
                 </div>
             </div>

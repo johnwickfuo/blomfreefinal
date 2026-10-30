@@ -20,7 +20,7 @@ const navLinks: NavLink[] = [
     { label: 'Kennel & Farm', href: '/kennel-farm' },
     { label: 'Collections', href: '/collections' },
     { label: 'Gadgets', href: '/gadgets' },
-    { label: 'BLOMWHEELS · Soon', href: '/contact' },
+    { label: 'BLOMWHEELS', href: '/automobiles' },
     { label: 'Affiliate', href: '/affiliate' },
     { label: 'Contact', href: '/contact' },
 ];

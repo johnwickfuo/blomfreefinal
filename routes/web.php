@@ -4,6 +4,7 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AffiliateController;
 use App\Http\Controllers\AffiliateDashboardController;
 use App\Http\Controllers\AnimalController;
+use App\Http\Controllers\AutomobileController;
 use App\Http\Controllers\InstallmentController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
@@ -36,6 +37,8 @@ Route::get('/', function () {
             'href' => route($division.'.show', $product),
         ])->values();
 
+    $vehicles = \App\Models\Vehicle::published()->where('status', 'available')->where('is_featured', true)
+        ->with('media')->latest()->limit(3)->get();
     $articles = \App\Models\Article::query()->where('is_published', true)->whereNotNull('published_at')
         ->where('published_at', '<=', now())->latest('published_at')->limit(3)->get();
     $testimonials = \App\Models\Testimonial::query()->where('is_approved', true)
@@ -77,6 +80,11 @@ Route::get('/', function () {
             ]),
             'collections' => $productCards('collections'),
             'gadgets' => $productCards('gadgets'),
+            'vehicles' => $vehicles->map(fn ($vehicle) => [
+                'id' => $vehicle->id, 'title' => $vehicle->title, 'image' => $vehicle->cover_url,
+                'meta' => $vehicle->year.' · '.$vehicle->make, 'price' => (float) $vehicle->price,
+                'href' => route('automobiles.show', $vehicle),
+            ]),
         ],
     ]);
 })->name('home')->middleware('edge-cache');
@@ -126,6 +134,12 @@ Route::post('/inquiries', [InquiryController::class, 'store'])
 /*
  * BLOMFREE Estates & Properties — land listings.
  */
+Route::get('/automobiles', [AutomobileController::class, 'index'])->name('automobiles.index');
+Route::get('/automobiles/compare', [AutomobileController::class, 'compare'])->name('automobiles.compare');
+Route::get('/automobiles/saved', [AutomobileController::class, 'saved'])->name('automobiles.saved');
+Route::get('/automobiles/{vehicle}', [AutomobileController::class, 'show'])->name('automobiles.show');
+Route::get('/automobiles/{vehicle}/inspect', [InspectionController::class, 'createForVehicle'])->name('automobiles.inspect');
+
 Route::get('/lands', [LandController::class, 'index'])->name('lands.index')->middleware('edge-cache');
 Route::get('/lands/{land}', [LandController::class, 'show'])->name('lands.show');
 Route::get('/lands/{land}/inspect', [InspectionController::class, 'createForLand'])->name('inspections.create');

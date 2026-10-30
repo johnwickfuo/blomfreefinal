@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Animal;
 use App\Models\Land;
 use App\Models\Product;
+use App\Models\Vehicle;
 use Illuminate\Http\Response;
 
 class SitemapController extends Controller
@@ -13,7 +14,7 @@ class SitemapController extends Controller
     {
         $urls = [];
 
-        $staticPaths = ['/', '/about', '/contact', '/lands', '/kennel-farm', '/collections', '/gadgets', '/track'];
+        $staticPaths = ['/', '/about', '/contact', '/lands', '/kennel-farm', '/collections', '/gadgets', '/automobiles', '/track'];
         foreach ($staticPaths as $path) {
             $urls[] = ['loc' => url($path), 'lastmod' => now()->toIso8601String(), 'changefreq' => 'weekly'];
         }
@@ -51,6 +52,11 @@ class SitemapController extends Controller
                     'changefreq' => 'weekly',
                 ];
             });
+
+        Vehicle::published()->orderByDesc('updated_at')->get(['slug', 'updated_at'])->each(function (Vehicle $vehicle) use (&$urls): void {
+            $urls[] = ['loc' => url('/automobiles/'.$vehicle->slug),
+                'lastmod' => $vehicle->updated_at?->toIso8601String(), 'changefreq' => 'weekly'];
+        });
 
         $xml = '<?xml version="1.0" encoding="UTF-8"?>'."\n";
         $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'."\n";

@@ -35,5 +35,5 @@ export const subsidiaries: Subsidiary[] = [
         href: '/gadgets',
         icon: Smartphone,
     },
-    { name: 'BLOMWHEELS Automobile', tagline: 'Discover our upcoming automobile division', href: '/contact', icon: CarFront, comingSoon: true },
+    { name: 'BLOMWHEELS Automobile', tagline: 'Explore brand-new, foreign-used and Nigerian-used vehicles', href: '/automobiles', icon: CarFront },
 ];
