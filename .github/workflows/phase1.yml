@@ -1,7 +1,7 @@
 name: Phase 1 checks
 on:
   push:
-    branches: [phase-1-security-auth, phase-2-homepage, phase-3-blomwheels-automobile]
+    branches: [phase-1-security-auth, phase-2-homepage, phase-3-blomwheels-automobile, phase-4-discovery-trust]
   pull_request:
   workflow_dispatch:
 jobs:
