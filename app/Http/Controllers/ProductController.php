@@ -228,6 +228,8 @@ class ProductController extends Controller
         }
 
         return [
+            'id' => $product->id,
+            'has_variants' => $product->has_variants,
             'name' => $product->name,
             'slug' => $product->slug,
             'category' => $product->category,

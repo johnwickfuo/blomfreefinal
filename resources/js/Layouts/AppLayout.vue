@@ -164,7 +164,7 @@ onBeforeUnmount(() => {
         <!-- Footer -->
         <footer class="bg-brand-dark text-white">
             <div class="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-                <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-5">
+                <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-6">
                     <!-- Brand -->
                     <div class="lg:col-span-2">
                         <div class="flex items-center gap-2.5">

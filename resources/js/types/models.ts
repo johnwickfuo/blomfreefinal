@@ -86,6 +86,8 @@ export interface CartData {
 }
 
 export interface ProductCardData {
+    id: number;
+    has_variants: boolean;
     name: string;
     slug: string;
     category: string;

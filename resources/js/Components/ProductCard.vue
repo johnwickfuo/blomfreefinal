@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { Link } from '@inertiajs/vue3';
+import { computed, ref } from 'vue';
+import { Link, router } from '@inertiajs/vue3';
+import { ShoppingCart } from 'lucide-vue-next';
+import { openCartDrawer } from '@/lib/cart';
 import Card from '@/Components/Card.vue';
 import Badge from '@/Components/Badge.vue';
 import { formatNaira } from '@/lib/format';
@@ -13,6 +15,17 @@ const props = defineProps<{
 }>();
 
 const href = computed(() => `/${props.subsidiary}/${props.product.slug}`);
+const adding = ref(false);
+function addToCart(): void {
+    if (adding.value || !props.product.is_in_stock || props.product.has_variants) return;
+    adding.value = true;
+    router.post('/cart/add', { cartable_type: 'product', cartable_id: props.product.id, quantity: 1 }, {
+        preserveScroll: true,
+        preserveState: true,
+        onSuccess: openCartDrawer,
+        onFinish: () => { adding.value = false; },
+    });
+}
 
 const hasDiscount = computed(
     () =>
@@ -86,6 +99,11 @@ const swatches = computed(() =>
                     {{ formatNaira(product.compare_price) }}
                 </span>
             </div>
+            <button v-if="product.is_in_stock && !product.has_variants" type="button" :disabled="adding"
+                class="mt-3 inline-flex items-center justify-center gap-2 rounded-xl bg-brand-orange px-4 py-2.5 text-xs font-bold text-white disabled:opacity-50 sm:text-sm"
+                @click="addToCart"><ShoppingCart class="h-4 w-4" />{{ adding ? 'Adding…' : 'Add to cart' }}</button>
+            <Link v-else-if="product.has_variants && product.is_in_stock" :href="href"
+                class="mt-3 rounded-xl bg-brand-dark px-4 py-2.5 text-center text-xs font-bold text-white sm:text-sm">Choose options</Link>
         </div>
     </Card>
 </template>
