@@ -12,6 +12,7 @@ class Inquiry extends Model
         'kennel_farm' => 'Kennel & Farm',
         'collections' => 'Collections',
         'gadgets' => 'Gadgets & Accessories',
+        'automobiles' => 'BLOMWHEELS Automobile',
         'partnership' => 'Partnership / Wholesale',
         'media' => 'Press & Media',
     ];
@@ -28,6 +29,8 @@ class Inquiry extends Model
         'status',
         'responded_at',
         'admin_notes',
+        'vehicle_id',
+        'inquiry_category',
     ];
 
     protected function casts(): array
@@ -35,6 +38,11 @@ class Inquiry extends Model
         return [
             'responded_at' => 'datetime',
         ];
+    }
+
+    public function vehicle(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Vehicle::class);
     }
 
     public function subjectLabel(): string

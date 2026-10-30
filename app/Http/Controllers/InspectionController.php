@@ -8,6 +8,7 @@ use App\Mail\InspectionRequestedAdmin;
 use App\Models\Animal;
 use App\Models\Inspection;
 use App\Models\Land;
+use App\Models\Vehicle;
 use App\Models\Setting;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
@@ -45,6 +46,20 @@ class InspectionController extends Controller
             'image' => $animal->cover_url,
             'back_url' => route('kennel-farm.show', $animal),
             'kind' => 'animal',
+        ]);
+    }
+
+    public function createForVehicle(Vehicle $vehicle): Response
+    {
+        abort_unless($vehicle->is_published && $vehicle->status === 'available', 404);
+
+        return $this->renderCreateForm('vehicle', $vehicle, [
+            'title' => $vehicle->title,
+            'subtitle' => $vehicle->year.' '.$vehicle->make.' '.$vehicle->model,
+            'meta' => trim($vehicle->city.', '.$vehicle->state, ', '),
+            'image' => $vehicle->cover_url,
+            'back_url' => route('automobiles.show', $vehicle),
+            'kind' => 'vehicle',
         ]);
     }
 
@@ -108,12 +123,14 @@ class InspectionController extends Controller
                 'location' => match (true) {
                     $inspectable instanceof Land => $inspectable->location_address,
                     $inspectable instanceof Animal => $inspectable->breed,
+                    $inspectable instanceof Vehicle => trim($inspectable->city.', '.$inspectable->state, ', '),
                     default => null,
                 },
                 'cover_url' => $inspectable->cover_url ?? null,
                 'url' => match (true) {
                     $inspectable instanceof Land => route('lands.show', $inspectable),
                     $inspectable instanceof Animal => route('kennel-farm.show', $inspectable),
+                    $inspectable instanceof Vehicle => route('automobiles.show', $inspectable),
                     default => null,
                 },
             ] : null,

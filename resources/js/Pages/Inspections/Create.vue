@@ -10,14 +10,14 @@ import Button from '@/Components/Button.vue';
 import { formatNigerianPhone } from '@/lib/format';
 
 interface InspectionSubject {
-    type: 'land' | 'animal';
+    type: 'land' | 'animal' | 'vehicle';
     id: number;
     title: string;
     subtitle: string;
     meta: string | null;
     image: string | null;
     back_url: string;
-    kind: 'site' | 'animal';
+    kind: 'site' | 'animal' | 'vehicle';
 }
 
 const props = defineProps<{
@@ -42,13 +42,13 @@ const form = useForm({
 const minDate = new Date();
 
 const inspectionLabel = computed(() =>
-    props.subject.kind === 'site' ? 'Site Inspection' : 'Inspection',
+    props.subject.kind === 'site' ? 'Site Inspection' : props.subject.kind === 'vehicle' ? 'Vehicle Inspection' : 'Inspection',
 );
 
 const headline = computed(() =>
     props.subject.kind === 'site'
         ? `Book a Site Inspection, ${props.subject.title}`
-        : `Book an Inspection, ${props.subject.title}`,
+        : props.subject.kind === 'vehicle' ? `Inspect ${props.subject.title}` : `Book an Inspection, ${props.subject.title}`,
 );
 
 function onPhoneInput(event: Event): void {

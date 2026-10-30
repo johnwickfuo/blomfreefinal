@@ -53,7 +53,13 @@ class StoreInspectionRequest extends FormRequest
             $class = Inspection::INSPECTABLE_TYPES[$type] ?? null;
 
             if ($class && ! $class::query()->whereKey($this->input('inspectable_id'))->exists()) {
-                $validator->errors()->add('inspectable_id', 'The selected property could not be found.');
+                $validator->errors()->add('inspectable_id', 'The selected listing could not be found.');
+            }
+            if ($type === 'vehicle' && $class) {
+                $vehicle = $class::find($this->input('inspectable_id'));
+                if (! $vehicle?->is_published || $vehicle?->status !== 'available') {
+                    $validator->errors()->add('inspectable_id', 'This vehicle is not available for inspection.');
+                }
             }
 
             $allowedDays = Setting::list('inspection_days', 'Mon,Tue,Wed,Thu,Fri,Sat');

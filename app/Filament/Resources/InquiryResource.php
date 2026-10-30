@@ -95,6 +95,9 @@ class InquiryResource extends Resource
                     ->label('From')
                     ->searchable(['name', 'email', 'phone'])
                     ->description(fn (Inquiry $r): string => $r->email),
+                Tables\Columns\TextColumn::make('vehicle.title')
+                    ->label('Vehicle')->placeholder('—')->searchable()->url(fn (Inquiry $r) => $r->vehicle ? VehicleResource::getUrl('edit', ['record' => $r->vehicle]) : null),
+                Tables\Columns\TextColumn::make('inquiry_category')->label('Type')->badge()->placeholder('—'),
                 Tables\Columns\TextColumn::make('subject')
                     ->badge()
                     ->color(fn (string $state): string => $state === 'partnership' || $state === 'media' ? 'info' : 'gray')

@@ -6,6 +6,7 @@ use App\Http\Requests\StoreInquiryRequest;
 use App\Mail\InquiryReceivedAdmin;
 use App\Models\Inquiry;
 use App\Models\Setting;
+use App\Models\Vehicle;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Mail;
 
@@ -21,13 +22,17 @@ class InquiryController extends Controller
                 ->with('success', "Thanks — we've received your message and will be in touch soon.");
         }
 
-        $inquiry = Inquiry::create($request->validated());
+        $data = $request->validated();
+        if (($data['subject'] ?? '') === 'automobiles') {
+            $vehicle = Vehicle::published()->where('status', 'available')->findOrFail($data['vehicle_id']);
+            $data['related_url'] = route('automobiles.show', $vehicle);
+        }
+        $inquiry = Inquiry::create($data);
 
         $adminEmail = Setting::get('admin_notification_email', 'admin@blomfree.com');
         Mail::to($adminEmail)->send(new InquiryReceivedAdmin($inquiry));
 
-        return redirect()
-            ->route('contact.index')
+        return redirect($inquiry->vehicle_id ? route('automobiles.show', $inquiry->vehicle) : route('contact.index'))
             ->with('success', "Thanks {$inquiry->name} — we've received your message and will reply shortly.");
     }
 }

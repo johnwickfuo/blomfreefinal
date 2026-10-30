@@ -8,6 +8,7 @@ use App\Mail\InspectionRejectedCustomer;
 use App\Models\Animal;
 use App\Models\Inspection;
 use App\Models\Land;
+use App\Models\Vehicle;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
@@ -59,6 +60,7 @@ class InspectionResource extends Resource
         return match (true) {
             $inspectable instanceof Land => LandResource::getUrl('edit', ['record' => $inspectable]),
             $inspectable instanceof Animal => AnimalResource::getUrl('edit', ['record' => $inspectable]),
+            $inspectable instanceof Vehicle => VehicleResource::getUrl('edit', ['record' => $inspectable]),
             default => null,
         };
     }
@@ -138,7 +140,7 @@ class InspectionResource extends Resource
                     ->formatStateUsing(fn (?string $state): string => $state ? class_basename($state) : '—'),
                 Tables\Columns\TextColumn::make('inspectable')
                     ->label('Listing')
-                    ->getStateUsing(fn (Inspection $record): string => $record->inspectable?->title ?? '—')
+                    ->getStateUsing(fn (Inspection $record): string => $record->inspectable?->title ?? $record->inspectable?->name ?? '—')
                     ->url(fn (Inspection $record): ?string => self::inspectableAdminUrl($record->inspectable))
                     ->color('primary')
                     ->searchable(false),

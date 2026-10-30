@@ -18,6 +18,7 @@ class Inspection extends Model
     public const INSPECTABLE_TYPES = [
         'land' => Land::class,
         'animal' => Animal::class,
+        'vehicle' => Vehicle::class,
     ];
 
     protected $fillable = [
