@@ -1,4 +1,7 @@
 name: Phase 1 checks
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 on:
   push:
     branches: [phase-1-security-auth, phase-2-homepage, phase-3-blomwheels-automobile, phase-4-discovery-trust, phase-5-marketplace]
