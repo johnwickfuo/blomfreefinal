@@ -15,9 +15,12 @@ class HomepageTest extends TestCase
     {
         $this->get('/')->assertOk()->assertInertia(fn (Assert $page) => $page
             ->component('Home')
-            ->has('featured.lands', 0)
-            ->has('featured.animals', 0)
-            ->has('featured.collections', 0)
-            ->has('featured.gadgets', 0));
+            ->has('featured', 0)
+            ->has('deals', 0)
+            ->has('byDivision.lands', 0)
+            ->has('byDivision.animals', 0)
+            ->has('byDivision.collections', 0)
+            ->has('byDivision.gadgets', 0)
+            ->has('byDivision.vehicles', 0));
     }
 }

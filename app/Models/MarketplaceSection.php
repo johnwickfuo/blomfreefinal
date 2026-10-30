@@ -13,6 +13,7 @@ class MarketplaceSection extends Model
         'departments' => ['title' => 'Shop by Division', 'order' => 40],
         'new' => ['title' => 'Just Added', 'order' => 50],
         'insights' => ['title' => 'Shopping Guides & Insights', 'order' => 60],
+        'voices' => ['title' => 'Customer Experiences', 'order' => 70],
     ];
 
     protected $fillable = ['section_key', 'title', 'is_enabled', 'display_order'];

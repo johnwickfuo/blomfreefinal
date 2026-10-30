@@ -17,6 +17,7 @@ const props = defineProps<{
     byDivision: Record<string, MarketplaceCardData[]>;
     sections: MarketplaceSectionData[];
     articles: { title: string; excerpt: string; href: string; image: string | null }[];
+    testimonials: { id: number; name: string; quote: string; division: string | null }[];
 }>();
 const icons = [Smartphone, Shirt, CarFront, MapPin, PawPrint];
 const bannerIndex = ref(0);
@@ -45,6 +46,7 @@ function sectionHasData(key: string): boolean {
     if (key === 'departments') return Object.values(props.byDivision).some(x => x.length > 0);
     if (key === 'new') return props.newArrivals.length > 0;
     if (key === 'insights') return props.articles.length > 0;
+    if (key === 'voices') return props.testimonials.length > 0;
     return false;
 }
 const anyInventory = computed(() => props.featured.length || props.newArrivals.length || Object.values(props.byDivision).some(x=>x.length));
@@ -122,6 +124,7 @@ const anyInventory = computed(() => props.featured.length || props.newArrivals.l
                             </div>
                         </template>
                     </div>
+                    <div v-else-if="section.key === 'voices'" class="grid gap-4 md:grid-cols-3"><blockquote v-for="person in testimonials" :key="person.id" class="rounded-2xl bg-white p-6 shadow-sm"><p class="line-clamp-5 text-sm leading-relaxed text-brand-dark/75">“{{ person.quote }}”</p><footer class="mt-4 text-sm font-bold">{{ person.name }}<span v-if="person.division" class="block text-xs font-normal text-brand-dark/55">{{ person.division }}</span></footer></blockquote></div>
                     <div v-else-if="section.key === 'insights'" class="grid gap-4 sm:grid-cols-3">
                         <Link v-for="article in articles" :key="article.href" :href="article.href" class="overflow-hidden rounded-2xl bg-white shadow-sm">
                             <img v-if="article.image" :src="article.image" :alt="article.title" loading="lazy" class="aspect-[16/9] w-full object-cover" />

@@ -35,7 +35,7 @@ class AutomobileTest extends TestCase
         );
         $this->get('/automobiles/'.$vehicle->slug)->assertNotFound();
         $this->get('/')->assertOk()->assertInertia(
-            fn (Assert $page) => $page->component('Home')->has('featured.vehicles', 0)
+            fn (Assert $page) => $page->component('Home')->has('byDivision.vehicles', 0)
         );
     }
 
@@ -48,7 +48,7 @@ class AutomobileTest extends TestCase
         );
         $this->get('/automobiles/'.$toyota->slug)->assertOk();
         $this->get('/')->assertOk()->assertInertia(
-            fn (Assert $page) => $page->component('Home')->has('featured.vehicles', 1)
+            fn (Assert $page) => $page->component('Home')->has('byDivision.vehicles', 1)
         );
         $this->get('/automobiles/compare?ids='.$toyota->id)->assertOk()->assertInertia(
             fn (Assert $page) => $page->component('Automobiles/Compare')->has('vehicles', 1)

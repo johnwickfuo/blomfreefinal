@@ -240,7 +240,7 @@ class ProductResource extends Resource
                         ->default(true)
                         ->inline(false),
                     Forms\Components\Toggle::make('is_featured')
-                        ->label('Featured')
+                        ->label('Featured on marketplace')
                         ->inline(false),
                     Forms\Components\TextInput::make('order')
                         ->numeric()

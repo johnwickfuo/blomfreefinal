@@ -10,6 +10,7 @@ use App\Models\MarketplacePlacement;
 use App\Models\MarketplaceSection;
 use App\Models\Product;
 use App\Models\Vehicle;
+use App\Models\Testimonial;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
@@ -93,7 +94,14 @@ class MarketplaceHomeService
                 'image' => $article->image_path ? Storage::disk('public')->url($article->image_path) : null,
             ])->all();
 
+        $testimonials = Testimonial::where('is_approved', true)->orderBy('display_order')
+            ->limit(3)->get()->map(fn (Testimonial $item) => [
+                'id' => $item->id, 'name' => $item->customer_name, 'quote' => $item->quote,
+                'division' => $item->division,
+            ])->all();
+
         return [
+            'testimonials' => $testimonials,
             'featured' => $featured, 'deals' => $pinned('deals'), 'spotlight' => $pinned('spotlight'),
             'byDivision' => $byDivision, 'newArrivals' => $newArrivals,
             'banners' => $banners, 'articles' => $articles,
