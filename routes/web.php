@@ -13,6 +13,7 @@ use App\Http\Controllers\InspectionController;
 use App\Http\Controllers\LandController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\MarketplaceHomeController;
 use App\Http\Controllers\ProductReviewController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SitemapController;
@@ -25,75 +26,7 @@ use Inertia\Inertia;
 Route::get('/saved', SavedListingController::class)->name('saved');
 Route::get('/search', SearchController::class)->name('search')->middleware('throttle:40,1');
 
-Route::get('/', function () {
-    $lands = \App\Models\Land::query()->with('media')->where('status', 'available')
-        ->orderByDesc('is_featured')->orderBy('order')->limit(3)->get();
-    $animals = \App\Models\Animal::query()->with('media')
-        ->where(fn ($query) => $query->where(fn ($pool) => $pool->where('listing_type', 'pool')->where('stock', '>', 0))
-            ->orWhere(fn ($individual) => $individual->where('listing_type', 'individual')->where('availability', 'available')))
-        ->orderByDesc('is_featured')->orderBy('order')->limit(3)->get();
-    $products = \App\Models\Product::query()->with(['media', 'variants'])
-        ->where('is_published', true)->whereIn('subsidiary', ['collections', 'gadgets'])
-        ->orderByDesc('is_featured')->orderBy('order')->limit(24)->get();
-
-    $productCards = fn ($division) => $products->where('subsidiary', $division)
-        ->filter(fn ($product) => $product->is_in_stock)->take(3)->map(fn ($product) => [
-            'id' => $product->id, 'title' => $product->name, 'image' => $product->cover_url,
-            'meta' => $product->category, 'price' => (float) $product->display_price,
-            'href' => route($division.'.show', $product),
-        ])->values();
-
-    $vehicles = \App\Models\Vehicle::published()->where('status', 'available')->where('is_featured', true)
-        ->with('media')->latest()->limit(3)->get();
-    $articles = \App\Models\Article::query()->where('is_published', true)->whereNotNull('published_at')
-        ->where('published_at', '<=', now())->latest('published_at')->limit(3)->get();
-    $testimonials = \App\Models\Testimonial::query()->where('is_approved', true)
-        ->orderBy('display_order')->limit(3)->get();
-    $banners = \App\Models\HomepageBanner::query()->where('is_active', true)
-        ->where(fn ($query) => $query->whereNull('starts_at')->orWhere('starts_at', '<=', now()))
-        ->where(fn ($query) => $query->whereNull('ends_at')->orWhere('ends_at', '>=', now()))
-        ->orderBy('display_order')->limit(3)->get();
-
-    return Inertia::render('Home', [
-        'articles' => $articles->map(fn ($article) => [
-            'id' => $article->id, 'title' => $article->title, 'excerpt' => $article->excerpt,
-            'category' => $article->category, 'image' => $article->image_path ? \Illuminate\Support\Facades\Storage::disk('public')->url($article->image_path) : null,
-            'href' => route('articles.show', $article->slug),
-        ]),
-        'testimonials' => $testimonials->map(fn ($item) => [
-            'id' => $item->id, 'name' => $item->customer_name, 'quote' => $item->quote,
-            'division' => $item->division, 'image' => $item->image_path ? \Illuminate\Support\Facades\Storage::disk('public')->url($item->image_path) : null,
-        ]),
-        'banners' => $banners->map(fn ($banner) => [
-            'id' => $banner->id, 'eyebrow' => $banner->eyebrow, 'headline' => $banner->headline,
-            'description' => $banner->description, 'image' => $banner->image_path ? \Illuminate\Support\Facades\Storage::disk('public')->url($banner->image_path) : null,
-            'button_label' => $banner->button_label,
-            'button_url' => preg_match('~^/(?!/)[a-zA-Z0-9/_?=&%-]*$~', $banner->button_url ?? '') ? $banner->button_url : null,
-        ]),
-        'featured' => [
-            'lands' => $lands->map(fn ($land) => [
-                'id' => $land->id, 'title' => $land->title, 'image' => $land->cover_url,
-                'meta' => $land->city_or_lga.', '.$land->state,
-                'price' => (float) $land->price_per_plot,
-                'detail' => $land->plot_size_sqm ? $land->plot_size_sqm.' m² per plot' : null,
-                'installments' => $land->installmentAvailableForPurchase(),
-                'href' => route('lands.show', $land),
-            ]),
-            'animals' => $animals->map(fn ($animal) => [
-                'id' => $animal->id, 'title' => $animal->name, 'image' => $animal->cover_url,
-                'meta' => $animal->breed, 'price' => (float) $animal->price,
-                'href' => route('kennel-farm.show', $animal),
-            ]),
-            'collections' => $productCards('collections'),
-            'gadgets' => $productCards('gadgets'),
-            'vehicles' => $vehicles->map(fn ($vehicle) => [
-                'id' => $vehicle->id, 'title' => $vehicle->title, 'image' => $vehicle->cover_url,
-                'meta' => $vehicle->year.' · '.$vehicle->make, 'price' => (float) $vehicle->price,
-                'href' => route('automobiles.show', $vehicle),
-            ]),
-        ],
-    ]);
-})->name('home')->middleware('edge-cache');
+Route::get('/', MarketplaceHomeController::class)->name('home')->middleware('edge-cache');
 
 Route::get('/insights', function () {
     return Inertia::render('Articles/Index', [
