@@ -30,6 +30,6 @@ jobs:
       - run: mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs bootstrap/cache
       - run: composer install --no-interaction --prefer-dist --no-progress
       - run: npm ci
-      - run: php artisan test
       - run: npm run build
+      - run: php artisan test
       - run: git diff --check
