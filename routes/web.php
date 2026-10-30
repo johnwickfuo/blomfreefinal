@@ -17,10 +17,12 @@ use App\Http\Controllers\ProductReviewController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\SavedListingController;
 use App\Http\Controllers\WebhookController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+Route::get('/saved', SavedListingController::class)->name('saved');
 Route::get('/search', SearchController::class)->name('search')->middleware('throttle:40,1');
 
 Route::get('/', function () {

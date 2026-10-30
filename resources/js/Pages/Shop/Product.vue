@@ -10,6 +10,8 @@ import Badge from '@/Components/Badge.vue';
 import Button from '@/Components/Button.vue';
 import Lightbox from '@/Components/Lightbox.vue';
 import ProductCard from '@/Components/ProductCard.vue';
+import ProductReviews from '@/Components/ProductReviews.vue';
+import SaveListingButton from '@/Components/SaveListingButton.vue';
 import SeoMeta from '@/Components/SeoMeta.vue';
 import JsonLd from '@/Components/JsonLd.vue';
 import { formatNaira } from '@/lib/format';
@@ -36,6 +38,10 @@ const props = defineProps<{
     optionValues: Record<string, string[]>;
     related: ProductCardData[];
     installment?: InstallmentSummary | null;
+    reviews: { id: number; name: string; rating: number; title: string; body: string; date: string }[];
+    reviewSummary: { count: number; average: number };
+    canReview: boolean;
+    myReview: { rating: number; display_name: string; title: string; body: string; status: string } | null;
 }>();
 
 const WHATSAPP_NUMBER = '2348103965317';
@@ -540,6 +546,8 @@ function isColorKey(key: string): boolean {
                 </div>
             </div>
 
+            <div class="mt-8"><SaveListingButton type="products" :id="product.id" /></div>
+
             <!-- Description -->
             <div class="mt-12 max-w-3xl">
                 <h2 class="text-xl font-extrabold tracking-tight">Description</h2>
@@ -570,6 +578,8 @@ function isColorKey(key: string): boolean {
                     </div>
                 </dl>
             </div>
+
+            <ProductReviews :product-slug="product.slug" :reviews="reviews" :summary="reviewSummary" :can-review="canReview" :my-review="myReview" />
 
             <!-- Related -->
             <div v-if="related.length" class="mt-16">

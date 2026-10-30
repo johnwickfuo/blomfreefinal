@@ -22,6 +22,7 @@ import Card from '@/Components/Card.vue';
 import Badge from '@/Components/Badge.vue';
 import Button from '@/Components/Button.vue';
 import Lightbox from '@/Components/Lightbox.vue';
+import SaveListingButton from '@/Components/SaveListingButton.vue';
 import SeoMeta from '@/Components/SeoMeta.vue';
 import JsonLd from '@/Components/JsonLd.vue';
 import { formatNaira } from '@/lib/format';
@@ -246,6 +247,7 @@ const landSchema = computed(() => ({
                         </div>
                     </div>
 
+                    <div class="mt-6"><SaveListingButton type="lands" :id="land.id" /></div>
                     <!-- Description -->
                     <div class="mt-10">
                         <h2 class="text-xl font-extrabold tracking-tight">

@@ -16,6 +16,7 @@ import Card from '@/Components/Card.vue';
 import Badge from '@/Components/Badge.vue';
 import Button from '@/Components/Button.vue';
 import Lightbox from '@/Components/Lightbox.vue';
+import SaveListingButton from '@/Components/SaveListingButton.vue';
 import AnimalCard from '@/Components/AnimalCard.vue';
 import SeoMeta from '@/Components/SeoMeta.vue';
 import JsonLd from '@/Components/JsonLd.vue';
@@ -337,6 +338,7 @@ const animalSchema = computed(() => ({
                 </div>
             </div>
 
+            <div class="mt-8"><SaveListingButton type="animals" :id="animal.id" /></div>
             <!-- Description -->
             <div class="mt-12 max-w-3xl">
                 <h2 class="text-xl font-extrabold tracking-tight">

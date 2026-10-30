@@ -17,6 +17,7 @@ const navLinks: NavLink[] = [
     { label: 'Home', href: '/' },
     { label: 'About', href: '/about' },
     { label: 'Search', href: '/search' },
+    { label: 'Saved', href: '/saved' },
     { label: 'Real Estate', href: '/lands' },
     { label: 'Kennel & Farm', href: '/kennel-farm' },
     { label: 'Collections', href: '/collections' },
