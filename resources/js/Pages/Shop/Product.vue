@@ -231,6 +231,10 @@ const productSchema = computed(() => ({
     category: props.product.category,
     brand: { '@type': 'Organization', name: 'BLOMFREE & CO.' },
     image: props.product.gallery_urls?.[0] ?? props.product.cover_url ?? undefined,
+    ...(props.reviewSummary.count > 0 ? { aggregateRating: {
+        '@type': 'AggregateRating', ratingValue: props.reviewSummary.average,
+        ratingCount: props.reviewSummary.count,
+    } } : {}),
     offers: {
         '@type': 'Offer',
         price: props.product.display_price,

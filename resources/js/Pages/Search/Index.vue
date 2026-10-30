@@ -50,7 +50,7 @@ function search(type = props.activeType): void {
             <p v-if="!hasSearched" class="mt-12 rounded-3xl bg-white p-10 text-center text-brand-dark/70">Enter at least two characters to discover listings.</p>
             <p v-else-if="!total" class="mt-12 rounded-3xl bg-white p-10 text-center text-brand-dark/70">No matching published listings found. Try another keyword or category.</p>
             <template v-else>
-                <p class="mt-8 text-sm text-brand-dark/65">Showing {{ total }} matching result{{ total === 1 ? '' : 's' }}{{ activeType === 'all' ? ' across our divisions' : '' }}.</p>
+                <p class="mt-8 text-sm text-brand-dark/65">Showing {{ total }} matching result{{ total === 1 ? '' : 's' }}{{ activeType === 'all' ? ' across our divisions' : '' }} (up to 8 per division).</p>
                 <section v-for="section in sections" :key="section.value" class="mt-10">
                     <template v-if="groups[section.value as GroupKey].length">
                         <h2 class="mb-5 flex items-center gap-2 text-2xl font-extrabold"><SlidersHorizontal class="h-5 w-5 text-brand-orange" /> {{ section.label }}</h2>

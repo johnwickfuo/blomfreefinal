@@ -27,7 +27,8 @@ class ProductReviewResource extends Resource
     {
         return $form->schema([
             Forms\Components\Section::make('Customer review')->schema([
-                Forms\Components\TextInput::make('product.name')->label('Product')->disabled()->dehydrated(false),
+                Forms\Components\Placeholder::make('product_name')->label('Product')
+                    ->content(fn (?ProductReview $record): string => $record?->product?->name ?? '—'),
                 Forms\Components\TextInput::make('display_name')->disabled()->dehydrated(false),
                 Forms\Components\TextInput::make('rating')->numeric()->disabled()->dehydrated(false),
                 Forms\Components\TextInput::make('title')->disabled()->dehydrated(false),
