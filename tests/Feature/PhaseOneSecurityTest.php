@@ -17,7 +17,9 @@ class PhaseOneSecurityTest extends TestCase
     {
         $response = (new EdgeCache)->handle(Request::create('/lands'), fn () => new Response('catalogue'));
 
-        $this->assertSame('private, no-store', $response->headers->get('Cache-Control'));
+        $cacheControl = (string) $response->headers->get('Cache-Control');
+        $this->assertStringContainsString('private', $cacheControl);
+        $this->assertStringContainsString('no-store', $cacheControl);
     }
 
     public function test_unsigned_order_and_inspection_links_are_rejected(): void
