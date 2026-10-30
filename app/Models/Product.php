@@ -140,6 +140,11 @@ class Product extends Model implements HasMedia
         return 'slug';
     }
 
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(ProductReview::class);
+    }
+
     public function variants(): HasMany
     {
         return $this->hasMany(ProductVariant::class);

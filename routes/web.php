@@ -13,6 +13,7 @@ use App\Http\Controllers\InspectionController;
 use App\Http\Controllers\LandController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductReviewController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\SearchController;
@@ -166,6 +167,9 @@ Route::get('/inspections/{inspection}', [InspectionController::class, 'show'])->
  * BLOMFREE Collections — unisex clothing & accessories catalog.
  */
 Route::get('/collections', [ProductController::class, 'collectionsIndex'])->name('collections.index')->middleware('edge-cache');
+Route::post('/shop/products/{product}/reviews', [ProductReviewController::class, 'store'])
+    ->middleware(['auth', 'verified', 'throttle:5,1'])->name('products.reviews.store');
+
 Route::get('/collections/{product}', [ProductController::class, 'collectionsShow'])->name('collections.show');
 
 /*

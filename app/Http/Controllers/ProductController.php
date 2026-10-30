@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\ProductVariant;
+use App\Models\ProductReview;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -142,6 +143,21 @@ class ProductController extends Controller
             'optionValues' => $optionValues,
             'related' => $related,
             'installment' => $this->installmentSummary($product, $subsidiary),
+            'reviews' => ProductReview::query()->approved()->where('product_id', $product->id)
+                ->latest()->limit(20)->get(['id', 'rating', 'display_name', 'title', 'body', 'created_at'])
+                ->map(fn (ProductReview $review): array => [
+                    'id' => $review->id, 'rating' => $review->rating, 'name' => $review->display_name,
+                    'title' => $review->title, 'body' => $review->body,
+                    'date' => $review->created_at->toDateString(),
+                ]),
+            'reviewSummary' => [
+                'count' => ProductReview::query()->approved()->where('product_id', $product->id)->count(),
+                'average' => round((float) ProductReview::query()->approved()->where('product_id', $product->id)->avg('rating'), 1),
+            ],
+            'canReview' => auth()->check() && ProductReview::hasVerifiedPurchase(auth()->user(), $product),
+            'myReview' => auth()->check()
+                ? ProductReview::query()->where('product_id', $product->id)->where('user_id', auth()->id())->first(['rating', 'display_name', 'title', 'body', 'status'])
+                : null,
         ]);
     }
 
