@@ -9,7 +9,7 @@ class MarketplaceSection extends Model
     public const DEFAULTS = [
         'deals' => ['title' => 'Today’s Deals', 'order' => 10],
         'featured' => ['title' => 'Featured Across BLOMFREE', 'order' => 20],
-        'spotlight' => ['title' => 'Handpicked for You', 'order' => 30],
+        'spotlight' => ['title' => 'Editor’s Picks', 'order' => 30],
         'departments' => ['title' => 'Shop by Division', 'order' => 40],
         'new' => ['title' => 'Just Added', 'order' => 50],
         'insights' => ['title' => 'Shopping Guides & Insights', 'order' => 60],

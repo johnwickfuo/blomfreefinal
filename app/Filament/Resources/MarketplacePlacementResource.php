@@ -15,7 +15,6 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Validation\Rule;
 
 class MarketplacePlacementResource extends Resource
 {
@@ -32,7 +31,11 @@ class MarketplacePlacementResource extends Resource
                 ->description('Choose a real listing and where it should appear. Deals require a genuine product markdown; no checkout prices are changed here.')
                 ->columns(2)->schema([
                     Forms\Components\Select::make('section')->options(MarketplacePlacement::SECTIONS)
-                        ->required()->live()->native(false),
+                        ->required()->live()->native(false)
+                        ->afterStateUpdated(function (?string $state, Forms\Set $set): void {
+                            $set('item_id', null);
+                            if ($state === 'deals') $set('item_type', Product::class);
+                        }),
                     Forms\Components\Select::make('item_type')->label('Listing division')
                         ->options(MarketplacePlacement::ITEM_TYPES)
                         ->required()->native(false)->live()->afterStateUpdated(fn (Forms\Set $set) => $set('item_id', null))
