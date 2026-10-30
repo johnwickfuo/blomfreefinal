@@ -3,7 +3,6 @@ import { computed, onMounted, ref } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { Dna, ShieldCheck, Syringe, LifeBuoy, HeartHandshake } from 'lucide-vue-next';
 import AppLayout from '@/Layouts/AppLayout.vue';
-import Hero from '@/Components/Hero.vue';
 import Section from '@/Components/Section.vue';
 import Badge from '@/Components/Badge.vue';
 import AnimalCard from '@/Components/AnimalCard.vue';
@@ -60,28 +59,28 @@ const activeAnimals = computed(() => props.animalsByCategory[activeTab.value] ??
 const reasons = [
     {
         icon: Dna,
-        title: 'Imported genetics',
-        body: 'Breeding stock sourced from established, traceable bloodlines.',
+        title: 'Review breed information',
+        body: 'Check breed and parent details for the individual listing when provided.',
     },
     {
         icon: ShieldCheck,
-        title: 'Health-certified',
-        body: 'Every animal is vet-checked before it is listed for sale.',
+        title: 'Ask about health records',
+        body: 'Confirm veterinary checks and documentation for the animal you are considering.',
     },
     {
         icon: Syringe,
-        title: 'Vaccinations on record',
-        body: 'Clear vaccination and deworming history you can verify.',
+        title: 'Check vaccination details',
+        body: 'Review available vaccination and deworming information and ask about missing records.',
     },
     {
         icon: LifeBuoy,
-        title: 'Ongoing support',
-        body: 'Guidance on feeding, housing and care after you take delivery.',
+        title: 'Plan responsible care',
+        body: 'Understand feeding, housing and veterinary needs before arranging delivery.',
     },
     {
         icon: HeartHandshake,
-        title: 'Ethical breeding',
-        body: 'Animals are raised in clean, humane, well-managed conditions.',
+        title: 'Arrange an inspection',
+        body: 'Use available inspection options to see the animal and verify its condition.',
     },
 ];
 </script>
@@ -93,36 +92,13 @@ const reasons = [
     />
 
     <AppLayout>
-        <Hero :overlay="false" min-height-class="min-h-[48vh]">
-            <template #overlay>
-                <div
-                    class="absolute inset-0"
-                    style="
-                        background: radial-gradient(
-                            circle at 75% 30%,
-                            rgba(245, 130, 32, 0.22),
-                            transparent 60%
-                        );
-                    "
-                    aria-hidden="true"
-                />
-            </template>
-            <template #eyebrow>
-                <Badge variant="info">BLOMFREE Kennel &amp; Farm</Badge>
-            </template>
-            <template #title>
-                <h1
-                    class="text-4xl font-extrabold tracking-tight text-white sm:text-5xl"
-                >
-                    Premium Breeds. Trusted Source.
-                </h1>
-            </template>
-            <template #subtitle>
-                Imported and locally bred animals raised to a high standard —
-                health-checked, ethically kept, and ready for a good home or
-                farm.
-            </template>
-        </Hero>
+        <div class="bg-brand-dark px-4 py-8 text-white sm:py-12">
+            <div class="mx-auto max-w-7xl">
+                <p class="text-xs font-bold uppercase tracking-widest text-brand-orange">BLOMFREE Kennel & Farm</p>
+                <h1 class="mt-2 text-3xl font-extrabold sm:text-4xl">Browse available animals</h1>
+                <p class="mt-2 max-w-2xl text-sm text-white/70 sm:text-base">Explore listed dogs, cats, rabbits and livestock. Review their details and ask about health records or inspection arrangements.</p>
+            </div>
+        </div>
 
         <Section>
             <form class="mb-6 flex flex-wrap items-end gap-3 rounded-2xl bg-white p-4" @submit.prevent="filterPrices">
@@ -176,8 +152,8 @@ const reasons = [
                     Nothing listed here yet
                 </p>
                 <p class="max-w-sm text-sm text-brand-dark/55">
-                    New animals in this category are added regularly — check
-                    back soon or send us an inquiry.
+                    Browse another category or
+                    contact us about availability.
                 </p>
             </div>
         </Section>
@@ -194,7 +170,7 @@ const reasons = [
                     <h2
                         class="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl"
                     >
-                        Animals you can trust, from a source you can verify
+                        Important checks before buying an animal
                     </h2>
                 </div>
                 <div

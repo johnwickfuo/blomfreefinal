@@ -10,7 +10,6 @@ import {
     X,
 } from 'lucide-vue-next';
 import AppLayout from '@/Layouts/AppLayout.vue';
-import Hero from '@/Components/Hero.vue';
 import Section from '@/Components/Section.vue';
 import Card from '@/Components/Card.vue';
 import Badge from '@/Components/Badge.vue';
@@ -93,35 +92,13 @@ function statusVariant(status: string): 'success' | 'warning' | 'neutral' {
     />
 
     <AppLayout>
-        <Hero :overlay="false" min-height-class="min-h-[48vh]">
-            <template #overlay>
-                <div
-                    class="absolute inset-0"
-                    style="
-                        background: radial-gradient(
-                            circle at 75% 30%,
-                            rgba(245, 130, 32, 0.22),
-                            transparent 60%
-                        );
-                    "
-                    aria-hidden="true"
-                />
-            </template>
-            <template #eyebrow>
-                <Badge variant="info">BLOMFREE Real Estate</Badge>
-            </template>
-            <template #title>
-                <h1
-                    class="text-4xl font-extrabold tracking-tight text-white sm:text-5xl"
-                >
-                    Find Your Perfect Plot
-                </h1>
-            </template>
-            <template #subtitle>
-                Verified land at flood-free locations across Nigeria — many with
-                flexible installment plans and clean, confirmed documents.
-            </template>
-        </Hero>
+        <div class="bg-brand-dark px-4 py-8 text-white sm:py-12">
+            <div class="mx-auto max-w-7xl">
+                <p class="text-xs font-bold uppercase tracking-widest text-brand-orange">BLOMFREE Real Estate</p>
+                <h1 class="mt-2 text-3xl font-extrabold sm:text-4xl">Find property & land</h1>
+                <p class="mt-2 max-w-2xl text-sm text-white/70 sm:text-base">Browse available plots, compare prices and locations, and arrange an inspection for the listings that interest you.</p>
+            </div>
+        </div>
 
         <Section>
             <div class="grid gap-8 lg:grid-cols-4">
