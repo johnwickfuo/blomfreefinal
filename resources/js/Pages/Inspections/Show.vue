@@ -85,7 +85,7 @@ const STATUS_CONFIG: Record<InspectionStatus, StatusMeta> = {
         icon: CheckCircle2,
         title: 'Inspection completed',
         message:
-            'This inspection has been completed. Thank you for visiting with BLOMFREE Real Estate.',
+            'This inspection has been completed. Thank you for visiting with BLOMFREE.',
     },
     no_show: {
         label: 'No-Show',

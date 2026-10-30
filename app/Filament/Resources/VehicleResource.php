@@ -35,7 +35,7 @@ class VehicleResource extends Resource
                     }),
                 Forms\Components\TextInput::make('slug')->required()->unique(ignoreRecord: true)->maxLength(255),
                 Forms\Components\TextInput::make('stock_reference')->label('Internal stock reference')->helperText('Leave blank to generate automatically.')->unique(ignoreRecord: true),
-                Forms\Components\Select::make('make')->options(array_combine(Vehicle::MAKES, Vehicle::MAKES))->searchable()->native(false)->required(),
+                Forms\Components\TextInput::make('make')->datalist(Vehicle::MAKES)->maxLength(100)->required(),
                 Forms\Components\TextInput::make('model')->required()->maxLength(100),
                 Forms\Components\TextInput::make('trim')->maxLength(100),
                 Forms\Components\TextInput::make('year')->required()->integer()->minValue(1950)->maxValue(2100),

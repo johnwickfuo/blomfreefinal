@@ -1,7 +1,7 @@
 name: Phase 1 checks
 on:
   push:
-    branches: [phase-1-security-auth, phase-2-homepage]
+    branches: [phase-1-security-auth, phase-2-homepage, phase-3-blomwheels-automobile]
   pull_request:
   workflow_dispatch:
 jobs:
@@ -27,6 +27,7 @@ jobs:
         with:
           node-version: '22'
           cache: npm
+      - run: mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs bootstrap/cache
       - run: composer install --no-interaction --prefer-dist --no-progress
       - run: npm ci
       - run: php artisan test
