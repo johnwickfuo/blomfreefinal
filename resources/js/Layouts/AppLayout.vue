@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue';
 import { Link, router, usePage } from '@inertiajs/vue3';
-import { Menu, X, ShoppingCart, Instagram, Facebook, AlertTriangle, UserCircle } from 'lucide-vue-next';
+import { Menu, X, ShoppingCart, Search, Instagram, Facebook, AlertTriangle, UserCircle } from 'lucide-vue-next';
 import CartLineItem from '@/Components/CartLineItem.vue';
 import Button from '@/Components/Button.vue';
 import { formatNaira } from '@/lib/format';
@@ -16,6 +16,7 @@ interface NavLink {
 const navLinks: NavLink[] = [
     { label: 'Home', href: '/' },
     { label: 'About', href: '/about' },
+    { label: 'Search', href: '/search' },
     { label: 'Real Estate', href: '/lands' },
     { label: 'Kennel & Farm', href: '/kennel-farm' },
     { label: 'Collections', href: '/collections' },
@@ -170,6 +171,7 @@ onBeforeUnmount(() => {
 
                 <!-- Right cluster: auth + cart + hamburger -->
                 <div class="flex items-center gap-1 sm:gap-2">
+                    <Link href="/search" aria-label="Search all BLOMFREE divisions" class="rounded-full p-2.5 text-white/90 transition-colors hover:bg-white/10"><Search class="h-5 w-5" /></Link>
                     <!-- Logged-out: Log in + Register on desktop -->
                     <template v-if="!authUser">
                         <Link
@@ -262,7 +264,7 @@ onBeforeUnmount(() => {
                             Quality is Priceless
                         </p>
                         <p class="mt-2 text-sm text-white/60">
-                            BLOMFREE &amp; CO. NIG. LTD brings together real estate, animals, fashion, technology and our upcoming automobile division.
+                            BLOMFREE &amp; CO. NIG. LTD brings together real estate, animals, fashion, technology and our automobile division.
                         </p>
                     </div>
 

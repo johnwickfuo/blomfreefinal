@@ -15,9 +15,12 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SitemapController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\WebhookController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+
+Route::get('/search', SearchController::class)->name('search')->middleware('throttle:40,1');
 
 Route::get('/', function () {
     $lands = \App\Models\Land::query()->with('media')->where('status', 'available')
