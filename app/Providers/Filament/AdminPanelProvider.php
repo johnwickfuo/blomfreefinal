@@ -44,6 +44,7 @@ class AdminPanelProvider extends PanelProvider
                 \App\Filament\Widgets\AffiliateOverviewWidget::class,
                 \App\Filament\Widgets\TopAffiliatesWidget::class,
                 \App\Filament\Widgets\LatestInquiriesWidget::class,
+                \App\Filament\Widgets\VehicleOverviewWidget::class,
                 Widgets\AccountWidget::class,
                 Widgets\FilamentInfoWidget::class,
             ])

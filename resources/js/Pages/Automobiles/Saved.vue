@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted, onBeforeUnmount } from 'vue';
 import { Link, router } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import SeoMeta from '@/Components/SeoMeta.vue';
@@ -7,7 +7,12 @@ import VehicleCard from '@/Components/VehicleCard.vue';
 import type { VehicleCardData } from '@/types/vehicles';
 import { readVehicleIds, vehicleCollectionUrl } from '@/lib/vehicleCollections';
 defineProps<{ vehicles: VehicleCardData[] }>();
-onMounted(() => { if (!window.location.search && readVehicleIds('blomwheels-saved').length) router.visit(vehicleCollectionUrl('saved')); });
+function refresh(): void { router.visit(vehicleCollectionUrl('saved'), { preserveScroll: true }); }
+onMounted(() => {
+    if (!window.location.search && readVehicleIds('blomwheels-saved').length) refresh();
+    window.addEventListener('blomwheels-list-changed', refresh);
+});
+onBeforeUnmount(() => window.removeEventListener('blomwheels-list-changed', refresh));
 </script>
 <template>
     <SeoMeta title="Saved Vehicles — BLOMWHEELS" description="Your saved vehicle listings." />

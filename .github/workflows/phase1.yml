@@ -28,6 +28,7 @@ jobs:
           node-version: '22'
           cache: npm
       - run: mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs bootstrap/cache
+      - run: touch .env
       - run: composer install --no-interaction --prefer-dist --no-progress
       - run: npm ci
       - run: npm run build

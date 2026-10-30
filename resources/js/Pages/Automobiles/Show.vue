@@ -4,6 +4,7 @@ import { Link, useForm } from '@inertiajs/vue3';
 import { Heart, GitCompareArrows, MapPin, CalendarDays } from 'lucide-vue-next';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import SeoMeta from '@/Components/SeoMeta.vue';
+import JsonLd from '@/Components/JsonLd.vue';
 import Lightbox from '@/Components/Lightbox.vue';
 import VehicleCard from '@/Components/VehicleCard.vue';
 import type { VehicleCardData, VehicleDetails } from '@/types/vehicles';
@@ -32,6 +33,18 @@ function toggle(key: 'blomwheels-saved' | 'blomwheels-compare'): void {
     sync();
 }
 onMounted(sync);
+const carSchema = computed(() => ({
+    '@context': 'https://schema.org', '@type': 'Car',
+    name: props.vehicle.title, description: props.vehicle.description,
+    image: props.vehicle.gallery,
+    brand: { '@type': 'Brand', name: props.vehicle.make },
+    model: props.vehicle.model, vehicleModelDate: String(props.vehicle.year),
+    itemCondition: props.vehicle.condition === 'brand_new' ? 'https://schema.org/NewCondition' : 'https://schema.org/UsedCondition',
+    mileageFromOdometer: props.vehicle.mileage_km === null ? undefined : { '@type': 'QuantitativeValue', value: props.vehicle.mileage_km, unitCode: 'KMT' },
+    offers: { '@type': 'Offer', price: props.vehicle.price, priceCurrency: 'NGN', availability:
+        props.vehicle.status === 'available' ? 'https://schema.org/InStock' :
+        props.vehicle.status === 'on_order' ? 'https://schema.org/PreOrder' : 'https://schema.org/OutOfStock' }
+}));
 const whatsapp = computed(() => 'https://wa.me/2348103965317?text=' + encodeURIComponent('Hello BLOMWHEELS, I would like to ask about ' + props.vehicle.title + ' (' + props.vehicle.stock_reference + ').'));
 const specifications = computed(() => [
     ['Make', props.vehicle.make], ['Model', props.vehicle.model], ['Year', String(props.vehicle.year)],
@@ -46,6 +59,7 @@ function submitInquiry(): void { form.post('/inquiries', { preserveScroll: true,
 
 <template>
     <SeoMeta :title="vehicle.title + ' — BLOMWHEELS Automobile'" :description="vehicle.year + ' ' + vehicle.make + ' ' + vehicle.model + ' for sale through BLOMWHEELS. View vehicle details and book an inspection.'" :image="vehicle.image ?? undefined" />
+    <JsonLd :schema="carSchema" />
     <AppLayout>
         <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
             <Link href="/automobiles" class="text-sm font-semibold text-brand-orange">← Back to all vehicles</Link>
@@ -57,6 +71,7 @@ function submitInquiry(): void { form.post('/inquiries', { preserveScroll: true,
                         <button v-for="(image, i) in vehicle.gallery.slice(1)" :key="i" type="button" class="aspect-square overflow-hidden rounded-xl bg-gray-100" @click="lightbox = i + 1"><img :src="image" alt="" class="h-full w-full object-cover" /></button>
                     </div>
                     <div class="mt-9"><h2 class="text-2xl font-extrabold">Vehicle overview</h2><p class="mt-4 whitespace-pre-line leading-relaxed text-brand-dark/75">{{ vehicle.description }}</p></div>
+                    <a v-if="vehicle.video_url" :href="vehicle.video_url" target="_blank" rel="noopener noreferrer" class="mt-6 inline-block font-semibold text-brand-orange underline">Watch vehicle video</a>
                     <div class="mt-10"><h2 class="text-2xl font-extrabold">Specifications</h2><dl class="mt-5 grid gap-3 sm:grid-cols-2">
                         <div v-for="[label, value] in specifications" :key="String(label)" class="rounded-xl bg-white p-4 ring-1 ring-black/5"><dt class="text-xs text-brand-dark/60">{{ label }}</dt><dd class="mt-1 font-bold">{{ value }}</dd></div>
                     </dl></div>
